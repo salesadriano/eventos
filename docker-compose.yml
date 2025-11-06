@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: react-19-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+    command: npm start
+
+  # Optional: Add a development database if needed
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: react-postgres
+  #   environment:
+  #     POSTGRES_DB: eventos_db
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+  # Optional: Add Redis for caching if needed
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: react-redis
+  #   ports:
+  #     - "6379:6379"
+
+# volumes:
+#   postgres_data:
