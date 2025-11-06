@@ -39,7 +39,61 @@
 	// "postCreateCommand": "cat /etc/os-release",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// React + TypeScript essentials
+				"dsznajder.es7-react-js-snippets",
+				"vscodeshift.mui-snippets",
+				"vscodeshift.material-ui-snippets",
+				"discountry.react-redux-react-router-snippets",
+				
+				// Formatting and linting
+				"esbenp.prettier-vscode",
+				"dbaeumer.vscode-eslint",
+				"rvest.vs-code-prettier-eslint",
+				"yoavbls.pretty-ts-errors",
+				
+				// IntelliSense and auto import
+				"christian-kohler.npm-intellisense",
+				"steoates.autoimport",
+				"pmneo.tsimporter",
+				"visualstudioexptteam.vscodeintellicode",
+				
+				// Testing
+				"orta.vscode-jest",
+				"firsttris.vscode-jest-runner",
+				"andys8.jest-snippets",
+				
+				// Git and version control
+				"eamodio.gitlens",
+				"mhutchie.git-graph",
+				"github.vscode-pull-request-github",
+				
+				// Productivity utilities
+				"mike-co.import-sorter",
+				"tombonnike.vscode-status-bar-format-toggle",
+				
+				// Theme
+				"github.github-vscode-theme"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"editor.codeActionsOnSave": {
+					"source.organizeImports": "explicit",
+					"source.fixAll.eslint": "explicit"
+				},
+				"typescript.preferences.organizeImports": true,
+				"typescript.suggest.autoImports": true,
+				"javascript.suggest.autoImports": true,
+				"editor.tabSize": 2,
+				"editor.insertSpaces": true,
+				"files.trimTrailingWhitespace": true,
+				"files.insertFinalNewline": true
+			}
+		}
+	},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
