@@ -1,5 +1,5 @@
-import type { IGoogleSheetsClient } from "./IGoogleSheetsClient";
 import type { IGoogleSheetsConfig } from "../../domain/repositories/IGoogleSheetsConfig";
+import type { IGoogleSheetsClient } from "./IGoogleSheetsClient";
 
 export class GoogleSheetsApiClient implements IGoogleSheetsClient {
   private readonly baseUrl = "https://sheets.googleapis.com/v4/spreadsheets";
@@ -8,7 +8,11 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
 
   async read(range: string): Promise<string[][]> {
     const encodedRange = encodeURIComponent(range);
-    const url = `${this.baseUrl}/${this.config.spreadsheetId}/values/${encodedRange}${this.config.apiKey ? `?key=${this.config.apiKey}` : ''}`;
+    const url = `${this.baseUrl}/${
+      this.config.spreadsheetId
+    }/values/${encodedRange}${
+      this.config.apiKey ? `?key=${this.config.apiKey}` : ""
+    }`;
 
     const response = await fetch(url, {
       headers: this.getHeaders(),
@@ -16,7 +20,9 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to read from Google Sheets: ${response.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to read from Google Sheets: ${response.statusText} - ${errorText}`
+      );
     }
 
     const data = await response.json();
@@ -35,7 +41,9 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to write to Google Sheets: ${response.statusText}`);
+      throw new Error(
+        `Failed to write to Google Sheets: ${response.statusText}`
+      );
     }
   }
 
@@ -51,7 +59,9 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to append to Google Sheets: ${response.statusText}`);
+      throw new Error(
+        `Failed to append to Google Sheets: ${response.statusText}`
+      );
     }
   }
 
@@ -82,7 +92,9 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to delete from Google Sheets: ${response.statusText}`);
+      throw new Error(
+        `Failed to delete from Google Sheets: ${response.statusText}`
+      );
     }
   }
 
@@ -98,6 +110,3 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     return headers;
   }
 }
-
-
-
