@@ -4,8 +4,23 @@ FROM node:24.11.0-slim
 # Set working directory
 WORKDIR /app
 
-# Install dependencies for building native modules
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+# Install dependencies for building native modules and Cypress
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    libgbm-dev \
+    libnotify-dev \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    xauth \
+    xvfb \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy package files first for better caching
 COPY package*.json ./
