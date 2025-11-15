@@ -27,9 +27,9 @@ export class LegacySheetsController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const events = await this.deps.getEventsUseCase.execute();
+      const result = await this.deps.getEventsUseCase.execute();
       const header = EventMapper.header();
-      const rows = events.map((event) => EventMapper.toRow(event));
+      const rows = result.results.map((event) => EventMapper.toRow(event));
       res.json({ values: [header, ...rows] });
     } catch (error) {
       next(error);
