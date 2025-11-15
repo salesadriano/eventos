@@ -1,16 +1,22 @@
 import { randomUUID } from "crypto";
 import { ValidationError } from "../errors/ApplicationError";
 
+export type UserProfile = "admin" | "user" | "guest";
+
 export interface UserCreateProps {
   id?: string;
   name: string;
   email: string;
+  password?: string;
+  profile?: UserProfile;
 }
 
 export interface UserPrimitive {
   id: string;
   name: string;
   email: string;
+  password?: string;
+  profile: UserProfile;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,6 +24,7 @@ export interface UserPrimitive {
 type UserConstructorProps = UserCreateProps & {
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  profile?: UserProfile;
 };
 
 const toDate = (value: Date | string | undefined, fallback: Date): Date => {
@@ -41,13 +48,25 @@ export class UserEntity {
   public readonly id: string;
   public readonly name: string;
   public readonly email: string;
+  public readonly password?: string;
+  public readonly profile: UserProfile;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
-  constructor({ id, name, email, createdAt, updatedAt }: UserConstructorProps) {
+  constructor({
+    id,
+    name,
+    email,
+    password,
+    profile,
+    createdAt,
+    updatedAt,
+  }: UserConstructorProps) {
     this.id = id ?? randomUUID();
     this.name = name;
     this.email = email;
+    this.password = password;
+    this.profile = profile ?? "user";
 
     const now = new Date();
     this.createdAt = toDate(createdAt, now);
@@ -80,6 +99,8 @@ export class UserEntity {
       id: this.id,
       name: this.name,
       email: this.email,
+      password: this.password,
+      profile: this.profile,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

@@ -1,6 +1,6 @@
 import { UserEntity } from "../../domain/entities/UserEntity";
 
-const HEADER = ["id", "name", "email", "createdAt", "updatedAt"];
+const HEADER = ["id", "name", "email", "password", "profile", "createdAt", "updatedAt"];
 
 const ensureValue = (value: string | undefined, fallback = ""): string =>
   value !== undefined && value !== null ? value : fallback;
@@ -19,8 +19,10 @@ export const UserMapper = {
       id: ensureValue(row[0]),
       name: ensureValue(row[1]),
       email: ensureValue(row[2]),
-      createdAt: ensureValue(row[3], new Date().toISOString()),
-      updatedAt: ensureValue(row[4], new Date().toISOString()),
+      password: ensureValue(row[3]) || undefined,
+      profile: (ensureValue(row[4]) || "user") as "admin" | "user" | "guest",
+      createdAt: ensureValue(row[5], new Date().toISOString()),
+      updatedAt: ensureValue(row[6], new Date().toISOString()),
     });
   },
 
@@ -30,6 +32,8 @@ export const UserMapper = {
       primitives.id,
       primitives.name,
       primitives.email,
+      primitives.password || "",
+      primitives.profile,
       primitives.createdAt.toISOString(),
       primitives.updatedAt.toISOString(),
     ];

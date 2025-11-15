@@ -2,6 +2,7 @@ import { UserEntity } from "../../domain/entities/UserEntity";
 import { NotFoundError } from "../../domain/errors/ApplicationError";
 import { UserRepository } from "../../domain/repositories/UserRepository";
 import { GoogleSheetsClient } from "../google/GoogleSheetsClient";
+import { SheetInitializer } from "../google/SheetInitializer";
 import { UserMapper } from "../mappers/UserMapper";
 
 interface RepositoryOptions {
@@ -28,12 +29,20 @@ export class GoogleSheetsUserRepository extends UserRepository {
   ) {
     super();
 
-    const [sheetName, cellRange = "A:E"] = options.range.split("!");
+    const [sheetName, cellRange = "A:G"] = options.range.split("!");
     this.sheetName = sheetName;
 
     const [startCell, endCell] = cellRange.split(":");
     this.startColumn = columnFromCell(startCell);
     this.endColumn = columnFromCell(endCell ?? startCell);
+  }
+
+  async initialize(): Promise<void> {
+    const initializer = new SheetInitializer(this.googleSheetsClient);
+    await initializer.initializeSheet({
+      sheetName: this.sheetName,
+      expectedHeaders: UserMapper.header(),
+    });
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -59,6 +68,19 @@ export class GoogleSheetsUserRepository extends UserRepository {
 
     const dataRows = rows.slice(1);
     const row = dataRows.find((current) => current?.[0] === id);
+
+    return row ? UserMapper.toEntity(row) : null;
+  }
+
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const rows = await this.googleSheetsClient.getValues(this.options.range);
+
+    if (!rows || rows.length <= 1) {
+      return null;
+    }
+
+    const dataRows = rows.slice(1);
+    const row = dataRows.find((current) => current?.[2] === email);
 
     return row ? UserMapper.toEntity(row) : null;
   }
