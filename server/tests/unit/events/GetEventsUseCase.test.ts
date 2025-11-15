@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { GetEventsUseCase } from "../../../src/application/usecases/events/GetEventsUseCase";
 import { EventEntity } from "../../../src/domain/entities/EventEntity";
 import { EventRepository } from "../../../src/domain/repositories/EventRepository";
@@ -11,7 +13,7 @@ class EventRepositoryStub extends EventRepository {
 }
 
 describe("GetEventsUseCase", () => {
-  it("returns the events provided by the repository", async () => {
+  it("returns the events provided by the repository with pagination", async () => {
     const repository = new EventRepositoryStub();
     const events = [
       EventEntity.create({
@@ -25,7 +27,16 @@ describe("GetEventsUseCase", () => {
 
     const useCase = new GetEventsUseCase(repository);
 
-    await expect(useCase.execute()).resolves.toEqual(events);
+    const result = await useCase.execute();
+    expect(result.results).toEqual(events);
+    expect(result.meta).toMatchObject({
+      page: 1,
+      limit: 1,
+      total: 1,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    });
     expect(repository.findAll).toHaveBeenCalledTimes(1);
   });
 });

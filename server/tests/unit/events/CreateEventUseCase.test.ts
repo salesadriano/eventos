@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { CreateEventUseCase } from "../../../src/application/usecases/events/CreateEventUseCase";
 import { EventEntity } from "../../../src/domain/entities/EventEntity";
 import { ValidationError } from "../../../src/domain/errors/ApplicationError";

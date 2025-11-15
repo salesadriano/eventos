@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { GetUserByIdUseCase } from "../../../src/application/usecases/users/GetUserByIdUseCase";
 import { UserEntity } from "../../../src/domain/entities/UserEntity";
 import { NotFoundError } from "../../../src/domain/errors/ApplicationError";
@@ -6,6 +8,7 @@ import { UserRepository } from "../../../src/domain/repositories/UserRepository"
 class UserRepositoryStub extends UserRepository {
   findAll = jest.fn();
   findById = jest.fn();
+  findByEmail = jest.fn();
   create = jest.fn();
   update = jest.fn();
   delete = jest.fn();

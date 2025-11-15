@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { GetEventByIdUseCase } from "../../../src/application/usecases/events/GetEventByIdUseCase";
 import { EventEntity } from "../../../src/domain/entities/EventEntity";
 import { NotFoundError } from "../../../src/domain/errors/ApplicationError";
