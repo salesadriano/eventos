@@ -2,6 +2,7 @@ import { EventEntity } from "../../domain/entities/EventEntity";
 import { NotFoundError } from "../../domain/errors/ApplicationError";
 import { EventRepository } from "../../domain/repositories/EventRepository";
 import { GoogleSheetsClient } from "../google/GoogleSheetsClient";
+import { SheetInitializer } from "../google/SheetInitializer";
 import { EventMapper } from "../mappers/EventMapper";
 
 interface RepositoryOptions {
@@ -34,6 +35,14 @@ export class GoogleSheetsEventRepository extends EventRepository {
     const [startCell, endCell] = cellRange.split(":");
     this.startColumn = columnFromCell(startCell);
     this.endColumn = columnFromCell(endCell ?? startCell);
+  }
+
+  async initialize(): Promise<void> {
+    const initializer = new SheetInitializer(this.googleSheetsClient);
+    await initializer.initializeSheet({
+      sheetName: this.sheetName,
+      expectedHeaders: EventMapper.header(),
+    });
   }
 
   async findAll(): Promise<EventEntity[]> {
