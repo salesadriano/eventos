@@ -5,7 +5,11 @@ export interface EventCreateProps {
   id?: string;
   title: string;
   description?: string;
-  date: Date | string;
+  date?: Date | string;
+  dateInit?: Date | string;
+  dateFinal?: Date | string;
+  inscriptionInit?: Date | string;
+  inscriptionFinal?: Date | string;
   location?: string;
 }
 
@@ -14,6 +18,10 @@ export interface EventPrimitive {
   title: string;
   description: string;
   date: Date;
+  dateInit: Date;
+  dateFinal: Date;
+  inscriptionInit: Date;
+  inscriptionFinal: Date;
   location: string;
   createdAt: Date;
   updatedAt: Date;
@@ -23,7 +31,11 @@ export interface EventPrimitiveInput {
   id: string;
   title: string;
   description: string;
-  date: Date | string;
+  date?: Date | string;
+  dateInit?: Date | string;
+  dateFinal?: Date | string;
+  inscriptionInit?: Date | string;
+  inscriptionFinal?: Date | string;
   location: string;
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -57,7 +69,10 @@ export class EventEntity {
   public readonly id: string;
   public readonly title: string;
   public readonly description: string;
-  public readonly date: Date;
+  public readonly dateInit: Date;
+  public readonly dateFinal: Date;
+  public readonly inscriptionInit: Date;
+  public readonly inscriptionFinal: Date;
   public readonly location: string;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
@@ -67,6 +82,10 @@ export class EventEntity {
     title,
     description,
     date,
+    dateInit,
+    dateFinal,
+    inscriptionInit,
+    inscriptionFinal,
     location,
     createdAt,
     updatedAt,
@@ -74,10 +93,22 @@ export class EventEntity {
     this.id = id ?? randomUUID();
     this.title = title;
     this.description = description ?? "";
-    this.date = toDate(date, new Date());
+
+    // Support both old format (date) and new format (dateInit/dateFinal)
+    const now = new Date();
+    if (date) {
+      const dateValue = toDate(date, now);
+      this.dateInit = dateInit ? toDate(dateInit, dateValue) : dateValue;
+      this.dateFinal = dateFinal ? toDate(dateFinal, dateValue) : dateValue;
+    } else {
+      this.dateInit = toDate(dateInit, now);
+      this.dateFinal = toDate(dateFinal, now);
+    }
+
+    this.inscriptionInit = toDate(inscriptionInit, now);
+    this.inscriptionFinal = toDate(inscriptionFinal, now);
     this.location = location ?? "";
 
-    const now = new Date();
     this.createdAt = toDate(createdAt, now);
     this.updatedAt = toDate(updatedAt, now);
 
@@ -88,9 +119,20 @@ export class EventEntity {
     if (!this.title || this.title.trim().length === 0) {
       throw new ValidationError("Event title is required");
     }
-
-    if (Number.isNaN(this.date.getTime())) {
-      throw new ValidationError("Event date is invalid");
+    if (Number.isNaN(this.dateInit.getTime())) {
+      throw new ValidationError("Event initial date is invalid");
+    }
+    if (Number.isNaN(this.dateFinal.getTime())) {
+      throw new ValidationError("Event final date is invalid");
+    }
+    if (Number.isNaN(this.inscriptionInit.getTime())) {
+      throw new ValidationError("Event inscription initial date is invalid");
+    }
+    if (Number.isNaN(this.inscriptionFinal.getTime())) {
+      throw new ValidationError("Event inscription final date is invalid");
+    }
+    if (!this.location || this.location.trim().length === 0) {
+      throw new ValidationError("Event location is required");
     }
   }
 
@@ -112,7 +154,11 @@ export class EventEntity {
       id: this.id,
       title: this.title,
       description: this.description,
-      date: this.date,
+      date: this.dateInit, // For backward compatibility, use dateInit as date
+      dateInit: this.dateInit,
+      dateFinal: this.dateFinal,
+      inscriptionInit: this.inscriptionInit,
+      inscriptionFinal: this.inscriptionFinal,
       location: this.location,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

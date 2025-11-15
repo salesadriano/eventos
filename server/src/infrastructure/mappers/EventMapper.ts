@@ -4,7 +4,10 @@ const HEADER = [
   "id",
   "title",
   "description",
-  "date",
+  "dateInit",
+  "dateFinal",
+  "inscriptionInit",
+  "inscriptionFinal",
   "location",
   "createdAt",
   "updatedAt",
@@ -27,22 +30,38 @@ export const EventMapper = {
       id: ensureValue(row[0]),
       title: ensureValue(row[1]),
       description: ensureValue(row[2]),
-      date: ensureValue(row[3], new Date().toISOString()),
-      location: ensureValue(row[4]),
-      createdAt: ensureValue(row[5], new Date().toISOString()),
-      updatedAt: ensureValue(row[6], new Date().toISOString()),
+      dateInit: ensureValue(row[3], new Date().toISOString()),
+      dateFinal: ensureValue(row[4], new Date().toISOString()),
+      inscriptionInit: ensureValue(row[5], new Date().toISOString()),
+      inscriptionFinal: ensureValue(row[6], new Date().toISOString()),
+      location: ensureValue(row[7]),
+      createdAt: ensureValue(row[8], new Date().toISOString()),
+      updatedAt: ensureValue(row[9], new Date().toISOString()),
     });
   },
 
   toRow(eventEntity: EventEntity): string[] {
-    const { id, title, description, date, location, createdAt, updatedAt } =
-      eventEntity.toPrimitives();
+    const {
+      id,
+      title,
+      description,
+      dateInit,
+      dateFinal,
+      inscriptionInit,
+      inscriptionFinal,
+      location,
+      createdAt,
+      updatedAt,
+    } = eventEntity.toPrimitives();
 
     return [
       id,
       title,
       description,
-      date.toISOString(),
+      dateInit.toISOString(),
+      dateFinal.toISOString(),
+      inscriptionInit.toISOString(),
+      inscriptionFinal.toISOString(),
       location,
       createdAt.toISOString(),
       updatedAt.toISOString(),
