@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { UserDtoMapper } from "../../../application/dtos/UserDtos";
+import { parsePaginationParams } from "../../../application/dtos/PaginationDtos";
 import type {
   CreateUserPayload,
   CreateUserUseCase,
@@ -24,12 +25,32 @@ export class UserController {
   constructor(private readonly deps: UserControllerDependencies) {}
 
   list = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const pagination = parsePaginationParams(
+        req.query.page as string,
+        req.query.limit as string
+      );
+      const result = await this.deps.getUsersUseCase.execute(pagination);
+      res.json({
+        results: result.results.map((user) => UserDtoMapper.toResponse(user)),
+        meta: result.meta,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  listAll = async (
     _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      const users = await this.deps.getUsersUseCase.execute();
+      const users = await this.deps.getUsersUseCase.executeAll();
       res.json(users.map((user) => UserDtoMapper.toResponse(user)));
     } catch (error) {
       next(error);

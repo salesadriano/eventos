@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { EventDtoMapper } from "../../../application/dtos/EventDtos";
+import { parsePaginationParams } from "../../../application/dtos/PaginationDtos";
 import type {
   CreateEventPayload,
   CreateEventUseCase,
@@ -24,12 +25,34 @@ export class EventController {
   constructor(private readonly deps: EventControllerDependencies) {}
 
   list = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const pagination = parsePaginationParams(
+        req.query.page as string,
+        req.query.limit as string
+      );
+      const result = await this.deps.getEventsUseCase.execute(pagination);
+      res.json({
+        results: result.results.map((event) =>
+          EventDtoMapper.toResponse(event)
+        ),
+        meta: result.meta,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  listAll = async (
     _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      const events = await this.deps.getEventsUseCase.execute();
+      const events = await this.deps.getEventsUseCase.executeAll();
       res.json(events.map((event) => EventDtoMapper.toResponse(event)));
     } catch (error) {
       next(error);
