@@ -6,7 +6,6 @@ module.exports = {
   moduleFileExtensions: ["ts", "js", "json"],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts"],
   setupFiles: ["<rootDir>/tests/setupEnv.ts"],
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.d.ts"],
   coverageDirectory: "coverage",
   clearMocks: true,
   verbose: false,
