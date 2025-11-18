@@ -145,6 +145,21 @@ For detailed Google Sheets setup instructions, see [GOOGLE_SHEETS_SETUP.md](./GO
 - `cd server && npm run start` - Build and start production server
 - `cd server && npm run build` - Build TypeScript to JavaScript
 
+## API Documentation
+
+The API documentation is available via Swagger UI when the server is running:
+
+- **Swagger UI**: `http://localhost:4000/api-docs`
+- **OpenAPI JSON**: Available through Swagger UI interface
+
+The documentation includes:
+
+- All RESTful endpoints (Events, Users, Emails)
+- Request/response schemas
+- Query parameters and pagination
+- Error responses
+- Interactive API testing
+
 ---
 
 # React + TypeScript + Vite

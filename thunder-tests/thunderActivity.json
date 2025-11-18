@@ -1,0 +1,14 @@
+[
+    {
+        "_id": "9e156818-ca08-40fd-a04d-6c7dfce5cc1d",
+        "colId": "history",
+        "containerId": "",
+        "name": "localhost:4000/api",
+        "url": "http://localhost:4000/api/sheets/values",
+        "method": "GET",
+        "sortNum": 0,
+        "created": "2025-11-15T11:14:15.259Z",
+        "modified": "2025-11-15T14:33:54.074Z",
+        "headers": []
+    }
+]

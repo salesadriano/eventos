@@ -2,20 +2,32 @@ import type { IGoogleSheetsConfig } from "../../domain/repositories/IGoogleSheet
 import type { IGoogleSheetsClient } from "./IGoogleSheetsClient";
 
 export class GoogleSheetsApiClient implements IGoogleSheetsClient {
-  private readonly baseUrl = "https://sheets.googleapis.com/v4/spreadsheets";
+  private readonly googleBaseUrl =
+    "https://sheets.googleapis.com/v4/spreadsheets";
 
   constructor(private readonly config: IGoogleSheetsConfig) {}
 
   async read(range: string): Promise<string[][]> {
+    if (this.usesProxy()) {
+      const response = await fetch(
+        this.buildProxyUrl("sheets/values", { range })
+      );
+      const data = (await this.parseJsonResponse(
+        response,
+        "read from Google Sheets via proxy"
+      )) as { values?: string[][] };
+      return data?.values ?? [];
+    }
+
     const encodedRange = encodeURIComponent(range);
-    const url = `${this.baseUrl}/${
+    const url = `${this.googleBaseUrl}/${
       this.config.spreadsheetId
     }/values/${encodedRange}${
       this.config.apiKey ? `?key=${this.config.apiKey}` : ""
     }`;
 
     const response = await fetch(url, {
-      headers: this.getHeaders(),
+      headers: this.getDirectHeaders(),
     });
 
     if (!response.ok) {
@@ -30,11 +42,19 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
   }
 
   async write(range: string, values: string[][]): Promise<void> {
-    const url = `${this.baseUrl}/${this.config.spreadsheetId}/values/${range}?valueInputOption=RAW`;
+    if (this.usesProxy()) {
+      await this.sendProxyRequest("PUT", "sheets/values", {
+        range,
+        values,
+      });
+      return;
+    }
+
+    const url = `${this.googleBaseUrl}/${this.config.spreadsheetId}/values/${range}?valueInputOption=RAW`;
 
     const response = await fetch(url, {
       method: "PUT",
-      headers: this.getHeaders(),
+      headers: this.getDirectHeaders(),
       body: JSON.stringify({
         values,
       }),
@@ -48,11 +68,19 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
   }
 
   async append(values: string[][]): Promise<void> {
-    const url = `${this.baseUrl}/${this.config.spreadsheetId}/values/${this.config.range}:append?valueInputOption=RAW`;
+    if (this.usesProxy()) {
+      await this.sendProxyRequest("POST", "sheets/append", {
+        range: this.config.range,
+        values,
+      });
+      return;
+    }
+
+    const url = `${this.googleBaseUrl}/${this.config.spreadsheetId}/values/${this.config.range}:append?valueInputOption=RAW`;
 
     const response = await fetch(url, {
       method: "POST",
-      headers: this.getHeaders(),
+      headers: this.getDirectHeaders(),
       body: JSON.stringify({
         values,
       }),
@@ -66,11 +94,19 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
   }
 
   async update(range: string, values: string[][]): Promise<void> {
-    const url = `${this.baseUrl}/${this.config.spreadsheetId}/values/${range}?valueInputOption=RAW`;
+    if (this.usesProxy()) {
+      await this.sendProxyRequest("PUT", "sheets/values", {
+        range,
+        values,
+      });
+      return;
+    }
+
+    const url = `${this.googleBaseUrl}/${this.config.spreadsheetId}/values/${range}?valueInputOption=RAW`;
 
     const response = await fetch(url, {
       method: "PUT",
-      headers: this.getHeaders(),
+      headers: this.getDirectHeaders(),
       body: JSON.stringify({
         values,
       }),
@@ -82,13 +118,20 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
   }
 
   async delete(range: string): Promise<void> {
+    if (this.usesProxy()) {
+      await this.sendProxyRequest("POST", "sheets/clear", {
+        range,
+      });
+      return;
+    }
+
     // Note: Google Sheets API doesn't have a direct delete endpoint for ranges
     // We'll clear the range instead
-    const url = `${this.baseUrl}/${this.config.spreadsheetId}/values/${range}:clear`;
+    const url = `${this.googleBaseUrl}/${this.config.spreadsheetId}/values/${range}:clear`;
 
     const response = await fetch(url, {
       method: "POST",
-      headers: this.getHeaders(),
+      headers: this.getDirectHeaders(),
     });
 
     if (!response.ok) {
@@ -98,7 +141,11 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     }
   }
 
-  private getHeaders(): HeadersInit {
+  private usesProxy(): boolean {
+    return Boolean(this.config.proxyBaseUrl);
+  }
+
+  private getDirectHeaders(): HeadersInit {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
@@ -108,5 +155,62 @@ export class GoogleSheetsApiClient implements IGoogleSheetsClient {
     }
 
     return headers;
+  }
+
+  private buildProxyUrl(path: string, query?: Record<string, string>): string {
+    if (!this.config.proxyBaseUrl) {
+      throw new Error("Proxy base URL is not configured");
+    }
+
+    const base = this.config.proxyBaseUrl.endsWith("/")
+      ? this.config.proxyBaseUrl.slice(0, -1)
+      : this.config.proxyBaseUrl;
+
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+    const searchParams = query
+      ? new URLSearchParams(
+          Object.entries(query).filter(([, value]) => value !== undefined)
+        ).toString()
+      : "";
+
+    return `${base}${normalizedPath}${searchParams ? `?${searchParams}` : ""}`;
+  }
+
+  private async sendProxyRequest(
+    method: "POST" | "PUT",
+    path: string,
+    body: Record<string, unknown>
+  ): Promise<void> {
+    const response = await fetch(this.buildProxyUrl(path), {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to ${method.toLowerCase()} ${path} via proxy: ${
+          response.statusText
+        } - ${errorText}`
+      );
+    }
+  }
+
+  private async parseJsonResponse(
+    response: Response,
+    action: string
+  ): Promise<Record<string, unknown>> {
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to ${action}: ${response.statusText} - ${errorText}`
+      );
+    }
+
+    return response.json();
   }
 }

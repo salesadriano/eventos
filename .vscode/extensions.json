@@ -1,3 +1,6 @@
 {
-  "recommendations": ["msjsdiag.debugger-for-chrome"]
+  "recommendations": [
+    "msjsdiag.debugger-for-chrome",
+    "bierner.markdown-mermaid"
+  ]
 }

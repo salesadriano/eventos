@@ -3,4 +3,5 @@ export interface IGoogleSheetsConfig {
   range: string;
   apiKey?: string;
   accessToken?: string;
+  proxyBaseUrl?: string;
 }
