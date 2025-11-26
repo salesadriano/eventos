@@ -43,6 +43,9 @@
         "vscodeshift.mui-snippets",
         "vscodeshift.material-ui-snippets",
         "discountry.react-redux-react-router-snippets",
+        "andrew-codes.cypress-snippets",
+        "shelex.vscode-cy-helper",
+        "g-fidalgo.cypress-runner",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "rvest.vs-code-prettier-eslint",
@@ -56,9 +59,10 @@
         "mike-co.import-sorter",
         "tombonnike.vscode-status-bar-format-toggle",
         "github.github-vscode-theme",
-        "msjsdiag.debugger-for-chrome",
         "rangav.vscode-thunder-client",
-        "bierner.markdown-mermaid"
+        "bierner.markdown-mermaid",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
       ],
       "settings": {
         "editor.formatOnSave": true,

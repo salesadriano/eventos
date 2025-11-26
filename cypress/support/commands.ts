@@ -10,12 +10,4 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      // Add custom command types here if needed
-    }
-  }
-}
-
-export {}
+export {};
