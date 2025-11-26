@@ -1,0 +1,11 @@
+<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CGEAC">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f8bd8" />
+      <stop offset="100%" stop-color="#0ec5a3" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="4" width="32" height="32" rx="8" fill="url(#grad)" />
+  <path d="M16 12c-4.418 0-8 3.582-8 8s3.582 8 8 8c2.835 0 5.313-1.485 6.708-3.728l-3.169-1.829A4 4 0 0 1 16 24c-2.209 0-4-1.791-4-4s1.791-4 4-4c1.458 0 2.736.781 3.44 1.952l3.186-1.84C21.253 13.43 18.813 12 16 12Z" fill="#fff" />
+  <text x="44" y="25" font-family="'Segoe UI', Arial, sans-serif" font-size="16" font-weight="700" fill="#0f1935">CGEAC</text>
+</svg>

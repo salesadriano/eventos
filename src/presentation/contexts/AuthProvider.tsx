@@ -1,29 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { apiClient } from "../../infrastructure/api/apiClient";
 import { tokenStorage } from "../../infrastructure/auth/tokenStorage";
+import { AuthContext, type AuthUser } from "./AuthContext";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  profile: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  checkToken: () => Promise<boolean>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const checkToken = async (): Promise<boolean> => {
@@ -34,7 +17,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await apiClient.get<{
         valid: boolean;
-        user?: User;
+        user?: AuthUser;
       }>("/auth/validate", { skipAuth: false });
 
       if (response.valid && response.user) {
@@ -53,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const response = await apiClient.post<{
       accessToken: string;
       refreshToken: string;
-      user: User;
+      user: AuthUser;
     }>("/auth/login", { email, password }, { skipAuth: true });
 
     tokenStorage.setTokens(response.accessToken, response.refreshToken);
@@ -72,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(false);
     };
 
-    initAuth();
+    void initAuth();
   }, []);
 
   return (
@@ -90,12 +73,3 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-

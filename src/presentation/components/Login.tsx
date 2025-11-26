@@ -1,7 +1,19 @@
-import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useState, type FC } from "react";
+import { useAuth } from "../hooks/useAuth";
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  className?: string;
+  title?: string;
+  description?: string;
+  id?: string;
+}
+
+export const Login: FC<LoginProps> = ({
+  className = "",
+  title = "Acessar painel",
+  description,
+  id,
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -12,14 +24,13 @@ export const Login: React.FC = () => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
-
     try {
       await login(email, password);
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to login. Please check your credentials."
+          : "Não foi possível acessar. Verifique suas credenciais."
       );
     } finally {
       setIsLoading(false);
@@ -27,93 +38,42 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "50px auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="email"
-            style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}
-          >
-            Email:
-          </label>
+    <section className={`login-panel ${className}`} id={id}>
+      <div className="panel-header">
+        <p className="eyebrow">Portal interno</p>
+        <div>
+          <h3>{title}</h3>
+          {description && <p className="muted">{description}</p>}
+        </div>
+      </div>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <label className="form-field">
+          <span>Email institucional</span>
           <input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
+            placeholder="nome@org.gov"
           />
-        </div>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="password"
-            style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}
-          >
-            Password:
-          </label>
+        </label>
+        <label className="form-field">
+          <span>Senha</span>
           <input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{
-              width: "100%",
-              padding: "8px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-              boxSizing: "border-box",
-            }}
+            placeholder="••••••••"
           />
-        </div>
-        {error && (
-          <div
-            style={{
-              marginBottom: "15px",
-              padding: "10px",
-              backgroundColor: "#fee",
-              color: "#c33",
-              borderRadius: "4px",
-            }}
-          >
-            {error}
-          </div>
-        )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            opacity: isLoading ? 0.6 : 1,
-          }}
-        >
-          {isLoading ? "Logging in..." : "Login"}
+        </label>
+        {error && <p className="error-text">{error}</p>}
+        <button className="btn primary full" type="submit" disabled={isLoading}>
+          {isLoading ? "Entrando..." : "Entrar"}
         </button>
       </form>
-    </div>
+    </section>
   );
 };
-
