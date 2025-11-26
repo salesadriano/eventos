@@ -1,13 +1,12 @@
+import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
+import { RefreshTokenUseCase } from "../application/usecases/auth/RefreshTokenUseCase";
+import { ValidateTokenUseCase } from "../application/usecases/auth/ValidateTokenUseCase";
+import { SendEmailUseCase } from "../application/usecases/email/SendEmailUseCase";
 import { CreateEventUseCase } from "../application/usecases/events/CreateEventUseCase";
 import { DeleteEventUseCase } from "../application/usecases/events/DeleteEventUseCase";
 import { GetEventByIdUseCase } from "../application/usecases/events/GetEventByIdUseCase";
 import { GetEventsUseCase } from "../application/usecases/events/GetEventsUseCase";
 import { UpdateEventUseCase } from "../application/usecases/events/UpdateEventUseCase";
-import { SendEmailUseCase } from "../application/usecases/email/SendEmailUseCase";
-import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
-import { RefreshTokenUseCase } from "../application/usecases/auth/RefreshTokenUseCase";
-import { ValidateTokenUseCase } from "../application/usecases/auth/ValidateTokenUseCase";
-import type { Email } from "../domain/entities/Email";
 import { CreateInscriptionUseCase } from "../application/usecases/inscriptions/CreateInscriptionUseCase";
 import { DeleteInscriptionUseCase } from "../application/usecases/inscriptions/DeleteInscriptionUseCase";
 import { GetInscriptionByIdUseCase } from "../application/usecases/inscriptions/GetInscriptionByIdUseCase";
@@ -23,6 +22,7 @@ import { GetUserByIdUseCase } from "../application/usecases/users/GetUserByIdUse
 import { GetUsersUseCase } from "../application/usecases/users/GetUsersUseCase";
 import { UpdateUserUseCase } from "../application/usecases/users/UpdateUserUseCase";
 import { environment } from "../config/environment";
+import type { IMailClient } from "../domain/repositories/IMailClient";
 import { JwtService } from "../infrastructure/auth/JwtService";
 import { PasswordService } from "../infrastructure/auth/PasswordService";
 import { GoogleSheetsClient } from "../infrastructure/google/GoogleSheetsClient";
@@ -62,7 +62,6 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   try {
     await eventRepository.initialize();
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to initialize events sheet:", error);
     throw error;
   }
@@ -81,7 +80,6 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   try {
     await userRepository.initialize();
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to initialize users sheet:", error);
     throw error;
   }
@@ -145,7 +143,6 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   try {
     await inscriptionRepository.initialize();
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to initialize inscriptions sheet:", error);
     throw error;
   }
@@ -185,7 +182,6 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   try {
     await presenceRepository.initialize();
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to initialize presences sheet:", error);
     throw error;
   }
@@ -219,22 +215,16 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
         });
       })()
     : (() => {
-        // Create a dummy email use case that throws an error when used
-        // This allows the app to start without SMTP config, but email endpoints will fail
-        class DummySendEmailUseCase extends SendEmailUseCase {
-          constructor() {
-            // Create a dummy mail client that will never be used
-            super({} as any);
-          }
-
-          async execute(_emailData: Email): Promise<void> {
+        const disabledMailClient: IMailClient = {
+          async send() {
             throw new Error(
               "Email service is not configured. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables."
             );
-          }
-        }
+          },
+        };
+
         return new EmailController({
-          sendEmailUseCase: new DummySendEmailUseCase(),
+          sendEmailUseCase: new SendEmailUseCase(disabledMailClient),
         });
       })();
 

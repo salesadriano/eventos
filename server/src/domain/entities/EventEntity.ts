@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { generateUUID } from "../../shared/utils/generateUUID";
 import { ValidationError } from "../errors/ApplicationError";
 
 export interface EventCreateProps {
@@ -90,7 +90,7 @@ export class EventEntity {
     createdAt,
     updatedAt,
   }: EventConstructorProps) {
-    this.id = id ?? randomUUID();
+    this.id = id ?? generateUUID();
     this.title = title;
     this.description = description ?? "";
 

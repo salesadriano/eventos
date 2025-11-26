@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { generateUUID } from "../../shared/utils/generateUUID";
 import { ValidationError } from "../errors/ApplicationError";
 
 export type InscriptionStatus = "pending" | "confirmed" | "cancelled";
@@ -55,7 +55,7 @@ export class InscriptionEntity {
     createdAt,
     updatedAt,
   }: InscriptionConstructorProps) {
-    this.id = id ?? randomUUID();
+    this.id = id ?? generateUUID();
     this.eventId = eventId;
     this.userId = userId;
     this.status = status ?? "pending";

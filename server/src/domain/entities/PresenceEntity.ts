@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { generateUUID } from "../../shared/utils/generateUUID";
 import { ValidationError } from "../errors/ApplicationError";
 
 export interface PresenceCreateProps {
@@ -50,7 +50,7 @@ export class PresenceEntity {
     presentAt,
     createdAt,
   }: PresenceConstructorProps) {
-    this.id = id ?? randomUUID();
+    this.id = id ?? generateUUID();
     this.eventId = eventId;
     this.userId = userId;
 

@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { generateUUID } from "../../shared/utils/generateUUID";
 import { ValidationError } from "../errors/ApplicationError";
 
 export type UserProfile = "admin" | "user" | "guest";
@@ -62,7 +62,7 @@ export class UserEntity {
     createdAt,
     updatedAt,
   }: UserConstructorProps) {
-    this.id = id ?? randomUUID();
+    this.id = id ?? generateUUID();
     this.name = name;
     this.email = email;
     this.password = password;

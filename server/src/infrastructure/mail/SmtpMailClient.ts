@@ -46,7 +46,6 @@ export class SmtpMailClient implements IMailClient {
       const info = await this.transporter.sendMail(mailOptions);
 
       // Log success (in production, use proper logging)
-      // eslint-disable-next-line no-console
       console.log("Email sent successfully:", info.messageId);
     } catch (error) {
       const errorMessage =
@@ -59,9 +58,8 @@ export class SmtpMailClient implements IMailClient {
     try {
       await this.transporter.verify();
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
 }
-

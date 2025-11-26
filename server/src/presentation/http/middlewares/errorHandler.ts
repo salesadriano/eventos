@@ -7,11 +7,11 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ): void => {
+  void _next;
   const applicationError = err instanceof ApplicationError ? err : null;
   const status = applicationError?.statusCode ?? 500;
 
   if (!applicationError) {
-    // eslint-disable-next-line no-console
     console.error(err);
   }
 
