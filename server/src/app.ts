@@ -10,8 +10,20 @@ import { registerRoutes } from "./presentation/http/routes";
 export const createApp = ({ controllers }: ApplicationContainer): Express => {
   const app = express();
 
-  const corsOptions: CorsOptions | undefined = environment.cors.allowOrigin
-    ? { origin: environment.cors.allowOrigin, credentials: true }
+  const developmentDefaultOrigins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+  ];
+
+  const allowOrigin =
+    environment.cors.allowOrigin && environment.cors.allowOrigin.length > 0
+      ? environment.cors.allowOrigin
+      : process.env.NODE_ENV === "production"
+        ? undefined
+        : developmentDefaultOrigins;
+
+  const corsOptions: CorsOptions | undefined = allowOrigin
+    ? { origin: allowOrigin, credentials: true }
     : undefined;
 
   if (corsOptions) {
