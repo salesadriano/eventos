@@ -1,0 +1,180 @@
+name: 🚀 Feature Request / User Story
+description: Propor uma nova funcionalidade ou história de usuário
+title: "[FEATURE]: "
+labels: ["enhancement", "feature", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚀 Solicitação de Nova Funcionalidade
+        
+        Obrigado por contribuir com o COMPRAC! Por favor, preencha as informações abaixo para ajudar a equipe a entender e implementar sua solicitação.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      description: Qual a prioridade desta funcionalidade?
+      options:
+        - P0 - Crítica (bloqueante)
+        - P1 - Alta (importante)
+        - P2 - Média (desejável)
+        - P3 - Baixa (pode aguardar)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Módulo
+      description: A qual módulo do sistema esta funcionalidade pertence?
+      options:
+        - Autenticação
+        - Fornecedores
+        - Editais
+        - Lotes
+        - Demandas/Procurement
+        - Secretarias (Multi-tenant)
+        - OAuth
+        - Auditoria
+        - Relatórios/Dashboard
+        - Infraestrutura
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: epic
+    attributes:
+      label: Epic / Fase do Roadmap
+      description: Esta funcionalidade faz parte de qual epic ou fase?
+      options:
+        - "Fase 1: Core - Editais e Lotes"
+        - "Fase 2: Gestão - Admin e Relatórios"
+        - "Fase 3: Qualidade - Testes"
+        - "Fase 4: Avançado - Workflow e Integrações"
+        - "Multi-Tenant: Secretarias"
+        - "OAuth: Autenticação Social"
+        - "Procurement: Gestão de Demandas"
+        - "Outro / Não se aplica"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: História de Usuário
+      description: Descreva a funcionalidade no formato de história de usuário
+      placeholder: |
+        Como [tipo de usuário]
+        Eu quero [fazer algo]
+        Para que [benefício/valor]
+        
+        Exemplo:
+        Como gestor de secretaria
+        Eu quero registrar uma demanda por materiais disponíveis em editais válidos
+        Para que possa solicitar produtos necessários para minha secretaria
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição Detalhada
+      description: Forneça uma descrição detalhada da funcionalidade
+      placeholder: |
+        Descreva em detalhes o que a funcionalidade deve fazer, incluindo:
+        - Comportamento esperado
+        - Regras de negócio
+        - Validações necessárias
+        - Integrações com outros módulos
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Critérios de Aceitação
+      description: Liste os critérios que devem ser atendidos para considerar a funcionalidade completa
+      placeholder: |
+        - [ ] Critério 1
+        - [ ] Critério 2
+        - [ ] Critério 3
+        - [ ] Testes unitários implementados
+        - [ ] Testes de integração implementados
+        - [ ] Documentação atualizada
+        - [ ] API documentada no Swagger
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: Notas Técnicas
+      description: Informações técnicas relevantes (opcional)
+      placeholder: |
+        - Entidades envolvidas
+        - Endpoints REST necessários
+        - Padrões de design a utilizar
+        - Dependências externas
+        - Considerações de performance/segurança
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups / Diagramas
+      description: Links ou anexos de mockups, diagramas ou referências visuais (opcional)
+      placeholder: |
+        Cole aqui links para Figma, imagens ou descrições de UI/UX
+
+  - type: dropdown
+    id: estimated-effort
+    attributes:
+      label: Estimativa de Esforço
+      description: Estimativa inicial (pode ser refinada)
+      options:
+        - XS (1-2 horas)
+        - S (3-8 horas)
+        - M (1-2 dias)
+        - L (3-5 dias)
+        - XL (1-2 semanas)
+        - XXL (2+ semanas)
+        - A definir
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Requisitos Relacionados
+      description: Esta funcionalidade está relacionada a quais requisitos funcionais?
+      options:
+        - label: RF-001 a RF-013 (Requisitos Base)
+        - label: RF-014 a RF-019 (Multi-Tenant Secretarias)
+        - label: RF-020 a RF-022 (OAuth Authentication)
+        - label: RF-023 a RF-028 (Demandas e Procurement)
+        - label: Novo requisito (não documentado)
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Referências
+      description: Links para documentação, issues relacionadas, PRs, etc.
+      placeholder: |
+        - Documentação: /docs/Especificacao-de-Requisitos.md#seção
+        - Issue relacionada: #123
+        - PR relacionado: #456
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist do Solicitante
+      description: Confirme que você verificou os seguintes itens
+      options:
+        - label: Verifiquei que esta funcionalidade não está duplicada em outra issue
+          required: true
+        - label: Consultei a documentação do projeto em /docs
+          required: true
+        - label: Esta funcionalidade está alinhada com o roadmap do projeto
+          required: true

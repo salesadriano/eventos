@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 export const expectAsyncError = async (
   fn: () => Promise<unknown>,
-  errorType: new (...args: any[]) => Error
+  errorType: new (...args: unknown[]) => Error,
 ): Promise<void> => {
   let error: unknown;
   try {

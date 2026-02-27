@@ -1,0 +1,233 @@
+name: 🧪 Testing
+description: Criar ou melhorar testes automatizados
+title: "[TEST]: "
+labels: ["testing", "quality", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧪 Testes Automatizados
+        
+        Use este template para propor novos testes ou melhorias na cobertura de testes.
+
+  - type: dropdown
+    id: test-type
+    attributes:
+      label: Tipo de Teste
+      description: Qual tipo de teste será implementado?
+      options:
+        - Teste Unitário
+        - Teste de Integração
+        - Teste E2E (End-to-End)
+        - Teste de Performance
+        - Teste de Carga
+        - Teste de Segurança
+        - Teste de Regressão
+        - Teste de Contrato (API)
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Módulo/Feature
+      description: Qual módulo ou funcionalidade será testada?
+      options:
+        - Autenticação
+        - Fornecedores
+        - Editais
+        - Lotes
+        - Demandas/Procurement
+        - Secretarias (Multi-tenant)
+        - OAuth
+        - Auditoria
+        - Relatórios/Dashboard
+        - APIs REST
+        - Database/Repositories
+        - Event Sourcing
+        - Múltiplos módulos
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Camada da Arquitetura
+      description: Qual camada será testada?
+      options:
+        - Domain Layer (Entidades, Value Objects)
+        - Application Layer (Use Cases)
+        - Infrastructure Layer (Repositories, APIs)
+        - Presentation Layer (Controllers)
+        - Database
+        - Integração entre camadas
+        - Sistema completo (E2E)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: O que precisa ser testado?
+      placeholder: |
+        Descreva o escopo dos testes a serem criados/melhorados:
+        - Funcionalidades a testar
+        - Casos de teste específicos
+        - Edge cases importantes
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-coverage
+    attributes:
+      label: Cobertura Atual
+      description: Qual a situação atual dos testes?
+      placeholder: |
+        - Cobertura atual: X%
+        - Testes existentes (se houver)
+        - Gaps identificados
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-scenarios
+    attributes:
+      label: Cenários de Teste
+      description: Liste os cenários que devem ser testados
+      placeholder: |
+        **Cenários de Sucesso:**
+        - [ ] Cenário 1: ...
+        - [ ] Cenário 2: ...
+        
+        **Cenários de Erro:**
+        - [ ] Validação de campo obrigatório
+        - [ ] Permissões insuficientes
+        - [ ] Recurso não encontrado
+        
+        **Edge Cases:**
+        - [ ] Valores limites
+        - [ ] Concorrência
+        - [ ] Dados inválidos
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-data
+    attributes:
+      label: Dados de Teste
+      description: Que dados serão necessários para os testes?
+      placeholder: |
+        - Fixtures
+        - Mocks
+        - Factories
+        - Seeds
+        - Dados específicos necessários
+
+  - type: textarea
+    id: assertions
+    attributes:
+      label: Asserções Principais
+      description: O que deve ser verificado nos testes?
+      placeholder: |
+        - Status code esperado
+        - Formato de resposta
+        - Validações de business rules
+        - Estado do banco de dados
+        - Eventos emitidos
+        - Logs gerados
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      description: Qual a prioridade destes testes?
+      options:
+        - P0 - Crítica (funcionalidade crítica sem testes)
+        - P1 - Alta (importante para qualidade)
+        - P2 - Média (melhorar cobertura)
+        - P3 - Baixa (nice to have)
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependências
+      description: Que dependências ou preparação são necessárias?
+      placeholder: |
+        - Bibliotecas de teste: jest, supertest, etc.
+        - Configuração de ambiente de teste
+        - Dados de setup
+        - Mocks de serviços externos
+
+  - type: dropdown
+    id: estimated-effort
+    attributes:
+      label: Estimativa de Esforço
+      description: Quanto tempo para implementar estes testes?
+      options:
+        - XS (1-2 horas)
+        - S (3-8 horas)
+        - M (1-2 dias)
+        - L (3-5 dias)
+        - XL (1+ semana)
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: test-requirements
+    attributes:
+      label: Requisitos dos Testes
+      description: O que os testes devem garantir?
+      options:
+        - label: Conformidade com requisitos funcionais
+        - label: Validação de regras de negócio
+        - label: Tratamento de erros adequado
+        - label: Performance aceitável
+        - label: Segurança (autenticação/autorização)
+        - label: Isolamento de testes (sem side effects)
+        - label: Testes determinísticos (sempre mesmo resultado)
+        - label: Coverage mínimo de 70%
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Critérios de Aceitação
+      description: Como saber que os testes estão completos?
+      placeholder: |
+        - [ ] Todos os cenários listados implementados
+        - [ ] Testes passando no CI/CD
+        - [ ] Coverage aumentado para X%
+        - [ ] Code review aprovado
+        - [ ] Documentação de testes atualizada
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Referências
+      description: Links relevantes
+      placeholder: |
+        - Requisito funcional: RF-XXX
+        - Caso de uso: UC-XXX
+        - Issue relacionada: #123
+        - PR relacionado: #456
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Identifiquei os cenários críticos a testar
+          required: true
+        - label: Considerei casos de sucesso e erro
+          required: true
+        - label: Planejei dados de teste necessários
+          required: true

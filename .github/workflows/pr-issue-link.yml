@@ -1,0 +1,168 @@
+name: PR and Issue Linking
+
+on:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  link-issue:
+    name: Link PR to Issue
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Link issue and update labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prBody = pr.body || '';
+            const prTitle = pr.title || '';
+            const defaultBranch = context.payload.repository.default_branch;
+            const repoBaseUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+            const quickStartUrl = `${repoBaseUrl}/blob/${defaultBranch}/docs/SETUP_QUICK_START.md`;
+
+            // Extrai número da issue do corpo ou título do PR
+            // Formatos suportados: #123, fixes #123, closes #123, resolves #123
+            const issueRegex = /#(\d+)|(?:fix(?:es)?|close(?:s)?|resolve(?:s)?)\s+#(\d+)/gi;
+            const matches = [...prBody.matchAll(issueRegex), ...prTitle.matchAll(issueRegex)];
+
+            if (matches.length > 0) {
+              for (const match of matches) {
+                const issueNumber = parseInt(match[1] || match[2]);
+
+                try {
+                  // Busca a issue
+                  const issue = await github.rest.issues.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber
+                  });
+
+                  // Remove label needs-triage e adiciona in-review
+                  const currentLabels = issue.data.labels.map(l => l.name);
+                  const newLabels = currentLabels
+                    .filter(l => l !== 'needs-triage' && l !== 'ready')
+                    .concat('in-review');
+
+                  await github.rest.issues.setLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    labels: newLabels
+                  });
+
+                  // Adiciona comentário na issue
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    body: `🔗 Pull Request vinculado: #${pr.number}\n\n` +
+                          `📝 **${pr.title}**\n\n` +
+                      `Esta issue está agora em revisão (\`in-review\`).\n\n` +
+                      `📚 Referência: [Setup rápido](${quickStartUrl})`
+                  });
+
+                  // Adiciona comentário no PR
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: pr.number,
+                    body: `🔗 Vinculado à issue #${issueNumber}\n\n` +
+                      `A issue será automaticamente fechada quando este PR for mergeado.\n\n` +
+                      `📚 Referência: [Setup rápido](${quickStartUrl})`
+                  });
+
+                } catch (error) {
+                  console.log(`Erro ao processar issue #${issueNumber}:`, error.message);
+                }
+              }
+            } else {
+              // Se não encontrou issue vinculada, adiciona comentário no PR
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `⚠️ **Nenhuma issue vinculada detectada**\n\n` +
+                      `Para vincular este PR a uma issue, adicione uma das seguintes linhas ao corpo do PR:\n` +
+                      `- \`Fixes #123\`\n` +
+                      `- \`Closes #123\`\n` +
+                      `- \`Resolves #123\`\n\n` +
+                      `Onde \`123\` é o número da issue.\n\n` +
+                      `📚 Referência: [Setup rápido](${quickStartUrl})`
+              });
+            }
+
+  close-linked-issues:
+    name: Close Linked Issues on Merge
+    runs-on: ubuntu-latest
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    permissions:
+      issues: write
+    steps:
+      - name: Update linked issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prBody = pr.body || '';
+            const prTitle = pr.title || '';
+            const defaultBranch = context.payload.repository.default_branch;
+            const repoBaseUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+            const quickStartUrl = `${repoBaseUrl}/blob/${defaultBranch}/docs/SETUP_QUICK_START.md`;
+
+            // Extrai número da issue
+            const issueRegex = /#(\d+)|(?:fix(?:es)?|close(?:s)?|resolve(?:s)?)\s+#(\d+)/gi;
+            const matches = [...prBody.matchAll(issueRegex), ...prTitle.matchAll(issueRegex)];
+
+            if (matches.length > 0) {
+              for (const match of matches) {
+                const issueNumber = parseInt(match[1] || match[2]);
+
+                try {
+                  // Busca a issue
+                  const issue = await github.rest.issues.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber
+                  });
+
+                  // Adiciona label 'done' e remove 'in-review'
+                  const currentLabels = issue.data.labels.map(l => l.name);
+                  const newLabels = currentLabels
+                    .filter(l => l !== 'in-review' && l !== 'in-progress')
+                    .concat('done');
+
+                  await github.rest.issues.setLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    labels: newLabels
+                  });
+
+                  // Adiciona comentário final
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    body: `✅ **Concluído!**\n\n` +
+                          `Pull Request #${pr.number} foi mergeado com sucesso.\n\n` +
+                      `Esta issue foi automaticamente marcada como concluída (\`done\`).\n\n` +
+                      `📚 Referência: [Setup rápido](${quickStartUrl})`
+                  });
+
+                  // Fecha a issue
+                  await github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    state: 'closed'
+                  });
+
+                } catch (error) {
+                  console.log(`Erro ao fechar issue #${issueNumber}:`, error.message);
+                }
+              }
+            }

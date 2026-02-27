@@ -1,0 +1,232 @@
+name: 🔧 Technical Task / Refactoring
+description: Tarefa técnica, refatoração ou melhoria de código
+title: "[TECH]: "
+labels: ["technical", "refactoring", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔧 Tarefa Técnica
+        
+        Use este template para tarefas técnicas, refatorações, otimizações ou melhorias na base de código.
+
+  - type: dropdown
+    id: task-type
+    attributes:
+      label: Tipo de Tarefa
+      description: Qual tipo de tarefa técnica?
+      options:
+        - Refatoração de código
+        - Otimização de performance
+        - Melhoria de arquitetura
+        - Atualização de dependências
+        - Migração de banco de dados
+        - Melhoria de segurança
+        - Code cleanup
+        - Automação de testes
+        - CI/CD
+        - DevOps/Infraestrutura
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      description: Qual a prioridade desta tarefa?
+      options:
+        - P0 - Crítica (bloqueante)
+        - P1 - Alta (importante)
+        - P2 - Média (desejável)
+        - P3 - Baixa (pode aguardar)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Módulo/Camada
+      description: Qual parte do sistema será afetada?
+      options:
+        - Domain Layer (Entidades, Value Objects)
+        - Application Layer (Use Cases, DTOs)
+        - Infrastructure Layer (Repositories, External APIs)
+        - Presentation Layer (Controllers, GraphQL)
+        - Database/Migrations
+        - Tests (Unit, Integration, E2E)
+        - Build/Deploy
+        - Documentation
+        - Múltiplos módulos
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-situation
+    attributes:
+      label: Situação Atual
+      description: Descreva o estado atual do código/sistema
+      placeholder: |
+        Qual é o problema técnico atual?
+        Por que esta tarefa é necessária?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Solução Proposta
+      description: Como você propõe resolver/melhorar?
+      placeholder: |
+        Descreva a solução técnica proposta:
+        - Abordagem técnica
+        - Padrões de design a utilizar
+        - Tecnologias/bibliotecas envolvidas
+        - Impacto em outras partes do sistema
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefícios
+      description: Quais os benefícios desta melhoria?
+      placeholder: |
+        - Melhoria de performance: X%
+        - Redução de complexidade
+        - Melhor manutenibilidade
+        - Maior cobertura de testes
+        - Conformidade com Clean Architecture/DDD
+        - Segurança aprimorada
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Riscos e Impactos
+      description: Quais os riscos e impactos desta mudança?
+      placeholder: |
+        - Breaking changes
+        - Downtime necessário
+        - Migração de dados
+        - Impacto em APIs existentes
+        - Necessidade de atualização de documentação
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-details
+    attributes:
+      label: Detalhes Técnicos
+      description: Informações técnicas adicionais
+      placeholder: |
+        **Arquivos/Classes afetados:**
+        - src/domain/...
+        - src/application/...
+        
+        **Dependências:**
+        - biblioteca X versão Y
+        
+        **Padrões:**
+        - Repository Pattern
+        - Factory Pattern
+        - etc.
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Critérios de Aceitação
+      description: Como saber que a tarefa está completa?
+      placeholder: |
+        - [ ] Código refatorado e testado
+        - [ ] Testes existentes continuam passando
+        - [ ] Novos testes adicionados (se aplicável)
+        - [ ] Performance medida e melhorada
+        - [ ] Documentação atualizada
+        - [ ] Code review aprovado
+        - [ ] Sem breaking changes (ou documentados)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: estimated-effort
+    attributes:
+      label: Estimativa de Esforço
+      description: Quanto tempo essa tarefa deve levar?
+      options:
+        - XS (1-2 horas)
+        - S (3-8 horas)
+        - M (1-2 dias)
+        - L (3-5 dias)
+        - XL (1-2 semanas)
+        - XXL (2+ semanas)
+        - A definir
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: related-areas
+    attributes:
+      label: Áreas Relacionadas
+      description: Marque as áreas do sistema que serão afetadas
+      options:
+        - label: Clean Architecture / DDD
+        - label: TypeORM / Database
+        - label: NestJS Modules
+        - label: Event Sourcing
+        - label: Authentication/Authorization
+        - label: Multi-tenant
+        - label: API REST / Swagger
+        - label: Testes automatizados
+        - label: CI/CD
+        - label: Docker/Deployment
+
+  - type: textarea
+    id: testing-strategy
+    attributes:
+      label: Estratégia de Testes
+      description: Como esta mudança será testada?
+      placeholder: |
+        - Testes unitários para ...
+        - Testes de integração para ...
+        - Testes E2E para ...
+        - Testes de performance/carga
+        - Testes de regressão
+
+  - type: textarea
+    id: migration-plan
+    attributes:
+      label: Plano de Migração
+      description: Se aplicável, como migrar do estado atual para o novo?
+      placeholder: |
+        1. Preparação
+        2. Migração de dados (se necessário)
+        3. Deploy
+        4. Verificação
+        5. Rollback plan
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Referências
+      description: Links úteis, artigos, documentação
+      placeholder: |
+        - ADR relacionado: docs/Arquitetura.md#adr-xxx
+        - Artigo: https://...
+        - Issue relacionada: #123
+        - PR relacionado: #456
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Esta tarefa está alinhada com a arquitetura do projeto
+          required: true
+        - label: Considerei o impacto em código existente
+          required: true
+        - label: Defini critérios claros de aceitação
+          required: true

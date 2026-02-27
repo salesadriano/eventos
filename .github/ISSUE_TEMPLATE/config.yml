@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentação do Projeto
+    url: https://github.com/pochydros/comprac_back/tree/main/docs
+    about: Consulte a documentação completa do projeto antes de abrir uma issue
+  - name: 💬 Discussões
+    url: https://github.com/pochydros/comprac_back/discussions
+    about: Para perguntas gerais e discussões sobre o projeto
+  - name: 📋 Project Board
+    url: https://github.com/pochydros/comprac_back/projects
+    about: Acompanhe o progresso do projeto e sprints

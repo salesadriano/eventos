@@ -1,237 +1,135 @@
 # Eventos
 
-## Getting Started
+Aplicação web para gestão de eventos, inscrições e presença, com frontend em React + Vite e backend em Node.js + Express (TypeScript, Clean Architecture), persistindo dados em Google Sheets via API.
 
-This project uses **Dev Containers** for a consistent development environment. You can develop either using the dev container (recommended) or locally.
+## Visão geral da arquitetura
 
-### Option 1: Using Dev Container (Recommended)
+- **Frontend** (`src/`): React + TypeScript + Vite
+  - Camadas: `domain` → `application` → `infrastructure` → `presentation`
+  - Consome a API backend via `src/infrastructure/api/apiClient.ts`
+  - Autenticação com tokens JWT e refresh automático em `401`
+- **Backend** (`server/`): Express + TypeScript (Clean Architecture)
+  - Camadas: `domain` → `application` → `infrastructure` → `presentation`
+  - Repositórios Google Sheets e inicialização automática de abas/cabeçalhos
+  - Rotas REST sob `/api` + endpoints legados em `/api/sheets/*`
 
-The project includes a fully configured dev container with all dependencies and tools pre-installed.
+## Pré-requisitos
 
-#### Prerequisites
+- Node.js (recomendado: 22+)
+- npm
+- Docker + VS Code Dev Containers (opcional, recomendado)
 
-- [Docker](https://www.docker.com/get-started) installed and running
-- [VS Code](https://code.visualstudio.com/) with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed
+## Setup rápido (local)
 
-#### Setup
-
-1. **Open the project in VS Code**
-
-   ```bash
-   code .
-   ```
-
-2. **Reopen in Container**
-
-   - When prompted, click "Reopen in Container"
-   - Or use the command palette: `F1` → `Dev Containers: Reopen in Container`
-   - The container will build automatically (this may take a few minutes on first run)
-
-3. **Wait for post-create setup**
-
-   - The container will automatically run `npx cypress install` after creation
-   - Dependencies are installed via Docker Compose
-
-4. **Configure environment variables**
-
-   - Create `.env` file in the project root (see [Environment Variables](#environment-variables) section)
-   - For the server, copy `server/.env.example` to `server/.env` and configure it
-
-5. **Start development**
-   - The dev container includes VS Code extensions for React, TypeScript, ESLint, Prettier, Git, and more
-   - All tools are pre-configured and ready to use
-
-#### Dev Container Features
-
-- **Pre-installed tools**: Node.js, npm, Cypress, and all project dependencies
-- **VS Code extensions**: React snippets, ESLint, Prettier, GitLens, and more
-- **Auto-formatting**: Code is automatically formatted on save
-- **Shell**: Zsh with plugins for better terminal experience
-- **Port forwarding**: Automatically configured for the development server
-
-### Option 2: Local Development
-
-If you prefer to develop locally without Docker:
-
-## Local Development
-
-1. **Install dependencies** for both the Vite app and the Sheets proxy:
+1. Instale dependências:
 
    ```bash
    npm install
    cd server && npm install
    ```
 
-2. **Configure environment variables** (see [Environment Variables](#environment-variables) section below)
+2. Configure variáveis de ambiente (seção abaixo).
 
-3. **Start the back-end proxy** (Clean Architecture service):
+3. Em terminais separados:
 
    ```bash
+   # backend
    cd server
-   # For development (with hot reload)
    npm run dev
-
-   # OR for production-like run
-   npm run start
    ```
 
-   The server will run on `http://localhost:4000`
-
-4. **Start the front-end**:
    ```bash
-   # From project root
+   # frontend (na raiz)
    npm run dev
    ```
 
-## Environment Variables
+4. Acesse:
+   - Frontend: `http://localhost:5173`
+   - Backend: `http://localhost:4000`
+   - Swagger: `http://localhost:4000/api-docs`
 
-### Front-end (`.env` in project root)
+## Setup com Dev Container
 
-Create a `.env` file with:
+1. Abra o projeto no VS Code.
+2. Execute **Dev Containers: Reopen in Container**.
+3. Aguarde o post-create (inclui instalação do Cypress).
+4. Configure `.env` e `server/.env`.
+
+## Variáveis de ambiente
+
+### Frontend (`.env` na raiz)
 
 ```env
-VITE_GOOGLE_SHEETS_ID=your-spreadsheet-id-here
+# URL base da API (usada pelo apiClient)
+VITE_API_BASE_URL=http://localhost:4000/api
+
+# Legado/compatibilidade (não é a fonte principal no client atual)
 VITE_SHEETS_PROXY_URL=http://localhost:4000/api
+VITE_GOOGLE_SHEETS_ID=
 ```
 
-### Back-end (`server/.env`)
+### Backend (`server/.env`)
 
-1. Copy the example file:
+Copie o exemplo:
 
-   ```bash
-   cp server/.env.example server/.env
-   ```
-
-2. Fill in your configuration:
-   - Google Sheets ID (same as front-end)
-   - Per-entity sheet ranges (events, users, inscriptions, presences)
-   - Service account credentials
-   - **Important**: Keep newline characters in the private key (replace literal `\n` sequences with real newlines if necessary)
-
-For detailed Google Sheets setup instructions, see [GOOGLE_SHEETS_SETUP.md](./GOOGLE_SHEETS_SETUP.md)
-
-## Project Structure
-
-### Front-end
-
-- **Domain layer** (`src/domain`): Core business entities and repository interfaces
-- **Application layer** (`src/application`): Business logic and use cases
-- **Infrastructure layer** (`src/infrastructure`): Google Sheets API client and repository implementations
-- **Presentation layer** (`src/presentation`): React hooks and UI components
-
-### Back-end
-
-- **Domain layer** (`server/src/domain`): Models `Event`, `User`, `Inscription`, and `Presence` entities plus repository contracts
-- **Application layer** (`server/src/application`): Use cases such as listing, creating, updating, and deleting events
-- **Infrastructure layer** (`server/src/infrastructure`): Google Sheets gateway and repositories
-- **Presentation layer** (`server/src/presentation`): Express controllers/routes for both REST (`/api/events`) and legacy Sheets-compatible endpoints (`/api/sheets/*`)
-- **Container** (`server/src/container`): Dependency injection wiring
-- **Main** (`server/src/main.ts`): HTTP app bootstrap
-
-## Available Scripts
-
-### Front-end
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run test` - Run Cypress tests
-- `npm run test:open` - Open Cypress Test Runner
-
-### Back-end
-
-- `cd server && npm run dev` - Start development server with hot reload
-- `cd server && npm run start` - Build and start production server
-- `cd server && npm run build` - Build TypeScript to JavaScript
-
-## API Documentation
-
-The API documentation is available via Swagger UI when the server is running:
-
-- **Swagger UI**: `http://localhost:4000/api-docs`
-- **OpenAPI JSON**: Available through Swagger UI interface
-
-The documentation includes:
-
-- All RESTful endpoints (Events, Users, Emails)
-- Request/response schemas
-- Query parameters and pagination
-- Error responses
-- Interactive API testing
-
----
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+cp server/.env.example server/.env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Variáveis obrigatórias para subir o backend:
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+- `GOOGLE_SHEETS_ID`
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL`
+- `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Observação: a chave privada aceita `\n` e é normalizada para quebra de linha real no carregamento.
+
+Para detalhes:
+
+- `docs/SETUP_QUICK_START.md`
+- `docs/GOOGLE_SHEETS_SETUP.md`
+- `docs/EMAIL_SETUP.md`
+
+## Scripts principais
+
+### Raiz (frontend)
+
+- `npm run dev` — inicia frontend em `5173` (strictPort)
+- `npm run build` — build TypeScript + Vite
+- `npm run lint` — lint com ESLint
+- `npm run test` — sobe frontend e executa Cypress E2E
+- `npm run test:open` — abre Cypress UI
+
+### Backend (`server/`)
+
+- `npm run dev` — backend com hot reload (`tsx watch`)
+- `npm run build` — compila TypeScript
+- `npm run start` — build + execução do backend
+- `npm test` — testes de use cases via Cypress
+
+## API e rotas
+
+- Base URL: `/api`
+- Recursos REST:
+  - `/events`
+  - `/users`
+  - `/inscriptions`
+  - `/presences`
+  - `/emails`
+- Legado: `/api/sheets/*`
+
+Fonte de verdade para rotas: `server/src/presentation/http/routes/**`.
+
+## Estrutura resumida
+
+- `src/` — frontend
+- `server/src/` — backend
+- `docs/` — documentação funcional/técnica
+- `cypress/` — E2E do frontend
+- `server/tests-cypress/` — testes de use cases do backend
+
+## Observações importantes
+
+- O backend falha na inicialização se variáveis Google obrigatórias estiverem ausentes.
+- SMTP é opcional: sem configuração, endpoints de e-mail retornam erro explícito de serviço não configurado.
+- O frontend deve consumir apenas a API backend (não acessar Google Sheets diretamente).

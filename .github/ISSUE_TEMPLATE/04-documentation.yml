@@ -1,0 +1,168 @@
+name: 📚 Documentation
+description: Melhorias ou correções na documentação
+title: "[DOCS]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📚 Documentação
+        
+        Use este template para propor melhorias, correções ou adições à documentação do projeto.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Tipo de Documentação
+      description: Qual tipo de documentação será afetada?
+      options:
+        - README.md
+        - Especificação de Requisitos
+        - Arquitetura
+        - Déficit Técnico
+        - Análise de Gestão de Demandas
+        - API Documentation (Swagger)
+        - Code Comments
+        - Histórias de Usuário
+        - Addendums
+        - Guias de Desenvolvimento
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: action-type
+    attributes:
+      label: Tipo de Ação
+      description: O que precisa ser feito?
+      options:
+        - Criar nova documentação
+        - Atualizar documentação existente
+        - Corrigir erro/inconsistência
+        - Adicionar exemplos
+        - Adicionar diagramas
+        - Melhorar clareza
+        - Tradução
+        - Remover documentação obsoleta
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: O que precisa ser documentado ou corrigido?
+      placeholder: |
+        Descreva detalhadamente o que precisa ser feito na documentação
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: Estado Atual
+      description: Como está atualmente? (se aplicável)
+      placeholder: |
+        Cole o trecho atual da documentação ou descreva o que está faltando
+
+  - type: textarea
+    id: proposed-content
+    attributes:
+      label: Conteúdo Proposto
+      description: Como deveria ficar?
+      placeholder: |
+        Forneça o novo conteúdo ou descreva como deveria ser documentado
+        
+        Pode incluir:
+        - Texto markdown
+        - Diagramas Mermaid
+        - Exemplos de código
+        - Links de referência
+
+  - type: textarea
+    id: files-affected
+    attributes:
+      label: Arquivos Afetados
+      description: Quais arquivos de documentação serão modificados?
+      placeholder: |
+        - /docs/Especificacao-de-Requisitos.md
+        - /docs/Arquitetura.md
+        - /README.md
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      description: Qual a prioridade desta documentação?
+      options:
+        - P0 - Crítica (documentação essencial faltando)
+        - P1 - Alta (importante para o projeto)
+        - P2 - Média (melhoria desejável)
+        - P3 - Baixa (nice to have)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: documentation-areas
+    attributes:
+      label: Áreas de Documentação
+      description: Marque as áreas relacionadas
+      options:
+        - label: Requisitos Funcionais (RF-xxx)
+        - label: Requisitos Não-Funcionais (RNF-xxx)
+        - label: Casos de Uso (UC-xxx)
+        - label: Modelo de Dados / ER Diagrams
+        - label: Arquitetura / ADRs
+        - label: API Endpoints
+        - label: Fluxos de Negócio
+        - label: Regras de Negócio
+        - label: Guias de Setup/Deploy
+        - label: Exemplos de Código
+
+  - type: textarea
+    id: diagrams
+    attributes:
+      label: Diagramas Necessários
+      description: Descreva diagramas que precisam ser criados/atualizados
+      placeholder: |
+        Tipo de diagrama (Mermaid):
+        - Sequence Diagram para ...
+        - ER Diagram mostrando ...
+        - Flow Chart de ...
+        - Class Diagram de ...
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Exemplos/Referências
+      description: Exemplos de como a documentação deveria ser
+      placeholder: |
+        Links para documentação similar ou exemplos de boa documentação
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivação
+      description: Por que esta documentação é necessária?
+      placeholder: |
+        - Dificuldade de entendimento atual
+        - Feedback de desenvolvedores
+        - Novos requisitos
+        - Correção de inconsistências
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Verifiquei que esta documentação não está duplicada
+          required: true
+        - label: A documentação proposta está alinhada com o projeto
+          required: true
+        - label: Considerei o público-alvo (desenvolvedores, gestores, etc.)
+          required: true

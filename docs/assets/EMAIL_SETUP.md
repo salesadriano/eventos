@@ -38,7 +38,7 @@ SMTP_FROM=your-email@ac.gov.br  # Optional, defaults to SMTP_USER
 
 ### Send Email
 
-**POST** `/api/email/send`
+**POST** `/api/emails`
 
 #### Request Body
 
@@ -48,9 +48,10 @@ SMTP_FROM=your-email@ac.gov.br  # Optional, defaults to SMTP_USER
   "subject": "Email Subject",
   "text": "Plain text content",
   "html": "<p>HTML content</p>",
-  "cc": ["cc1@example.com", "cc2@example.com"],  // Optional
-  "bcc": ["bcc@example.com"],  // Optional
-  "attachments": [  // Optional
+  "cc": ["cc1@example.com", "cc2@example.com"], // Optional
+  "bcc": ["bcc@example.com"], // Optional
+  "attachments": [
+    // Optional
     {
       "filename": "document.pdf",
       "content": "base64-encoded-content",
@@ -63,6 +64,7 @@ SMTP_FROM=your-email@ac.gov.br  # Optional, defaults to SMTP_USER
 #### Response
 
 **Success (200 OK)**
+
 ```json
 {
   "success": true,
@@ -71,6 +73,7 @@ SMTP_FROM=your-email@ac.gov.br  # Optional, defaults to SMTP_USER
 ```
 
 **Error (400/500)**
+
 ```json
 {
   "error": "Error message"
@@ -80,7 +83,7 @@ SMTP_FROM=your-email@ac.gov.br  # Optional, defaults to SMTP_USER
 #### Example with cURL
 
 ```bash
-curl -X POST http://localhost:4000/api/email/send \
+curl -X POST http://localhost:4000/api/emails \
   -H "Content-Type: application/json" \
   -d '{
     "to": "recipient@example.com",
@@ -95,19 +98,23 @@ curl -X POST http://localhost:4000/api/email/send \
 The email service follows Clean Architecture principles:
 
 ### Domain Layer
+
 - `Email` entity and `EmailEntity` class
 - `IMailClient` interface (repository pattern)
 - `ISmtpConfig` interface
 
 ### Application Layer
+
 - `SendEmailUseCase` - Business logic for sending emails
 
 ### Infrastructure Layer
+
 - `SmtpMailClient` - Nodemailer implementation of `IMailClient`
 
 ### Presentation Layer
+
 - `EmailController` - HTTP controller
-- `/api/email/send` route
+- `/api/emails` route
 
 ## Features
 
@@ -149,8 +156,8 @@ You can test the email service using:
 ## Security Notes
 
 ⚠️ **Important**:
+
 - Never commit `.env` files with real credentials
 - Use environment variables for all sensitive data
 - Consider using app-specific passwords instead of main account passwords
 - In production, use secure credential management systems
-
