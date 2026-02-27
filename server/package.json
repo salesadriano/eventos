@@ -6,7 +6,7 @@
     "build": "tsc --project tsconfig.json",
     "start": "npm run build && node dist/main.js",
     "dev": "tsx watch src/main.ts",
-    "test": "xvfb-run -a cypress run --config-file cypress.config.ts",
+    "test": "tsx tests-cypress/runCoverage.ts",
     "test:watch": "xvfb-run -a cypress open --config-file cypress.config.ts",
     "test:coverage": "c8 --all --src src --exclude tests-cypress/** --exclude dist/** --reporter=text-summary --reporter=lcov --reporter=json-summary tsx tests-cypress/runCoverage.ts"
   },

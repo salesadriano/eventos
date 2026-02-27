@@ -1,5 +1,5 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "crypto";
 import type { Environment } from "../../config/environment";
 
 export interface TokenPayload {

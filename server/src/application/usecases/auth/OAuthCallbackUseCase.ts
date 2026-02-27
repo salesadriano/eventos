@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash } from "crypto";
 import { UserEntity, type OAuthProvider } from "../../../domain/entities/UserEntity";
 import {
   UnauthorizedError,

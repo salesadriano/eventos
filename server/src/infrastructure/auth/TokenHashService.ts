@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac } from "crypto";
 
 export class TokenHashService {
   constructor(private readonly secret: string) {}

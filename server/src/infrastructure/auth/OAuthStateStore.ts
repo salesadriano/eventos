@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "crypto";
 import { UnauthorizedError } from "../../domain/errors/ApplicationError";
 
 export interface OAuthStateContext {
