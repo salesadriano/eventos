@@ -6,6 +6,7 @@ export interface CreatePresencePayload {
   id?: string;
   eventId: string;
   userId: string;
+  activityId?: string;
   presentAt?: Date | string;
   createdAt?: Date | string;
 }
@@ -18,7 +19,11 @@ export class CreatePresenceUseCase {
     const allPresences = await this.presenceRepository.findByEvent(
       payload.eventId
     );
-    const existing = allPresences.find((p) => p.userId === payload.userId);
+    const existing = allPresences.find(
+      (p) =>
+        p.userId === payload.userId &&
+        (p.activityId || "") === (payload.activityId || "")
+    );
 
     if (existing) {
       throw new ValidationError(

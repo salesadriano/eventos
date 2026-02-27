@@ -1,5 +1,7 @@
 import { refreshTokenUseCaseSpecs } from "./specs/auth/RefreshTokenUseCase.spec";
 import { startOAuthAuthorizationUseCaseSpecs } from "./specs/auth/StartOAuthAuthorizationUseCase.spec";
+import { evaluateCertificateBatchUseCaseSpecs } from "./specs/certificates/EvaluateCertificateBatchUseCase.spec";
+import { evaluateCertificateEligibilityUseCaseSpecs } from "./specs/certificates/EvaluateCertificateEligibilityUseCase.spec";
 import { createEventUseCaseSpecs } from "./specs/events/CreateEventUseCase.spec";
 import { deleteEventUseCaseSpecs } from "./specs/events/DeleteEventUseCase.spec";
 import { getEventByIdUseCaseSpecs } from "./specs/events/GetEventByIdUseCase.spec";
@@ -20,6 +22,8 @@ type SpecMap = Record<string, () => Promise<void> | void>;
 const suites: Record<string, SpecMap> = {
   RefreshTokenUseCase: refreshTokenUseCaseSpecs,
   StartOAuthAuthorizationUseCase: startOAuthAuthorizationUseCaseSpecs,
+  EvaluateCertificateEligibilityUseCase: evaluateCertificateEligibilityUseCaseSpecs,
+  EvaluateCertificateBatchUseCase: evaluateCertificateBatchUseCaseSpecs,
   CreateEventUseCase: createEventUseCaseSpecs,
   DeleteEventUseCase: deleteEventUseCaseSpecs,
   GetEventByIdUseCase: getEventByIdUseCaseSpecs,

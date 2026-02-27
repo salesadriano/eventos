@@ -7,6 +7,7 @@ export interface CreateInscriptionPayload {
   id?: string;
   eventId: string;
   userId: string;
+  activityId?: string;
   status?: InscriptionStatus;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -23,7 +24,8 @@ export class CreateInscriptionUseCase {
     // Check if inscription already exists for this event and user
     const existing = await this.inscriptionRepository.findByEventAndUser(
       payload.eventId,
-      payload.userId
+      payload.userId,
+      payload.activityId
     );
 
     if (existing) {

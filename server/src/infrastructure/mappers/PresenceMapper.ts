@@ -1,6 +1,6 @@
 import { PresenceEntity } from "../../domain/entities/PresenceEntity";
 
-const HEADER = ["id", "eventId", "userId", "presentAt", "createdAt"];
+const HEADER = ["id", "eventId", "userId", "activityId", "presentAt", "createdAt"];
 
 const ensureValue = (value: string | undefined, fallback = ""): string =>
   value !== undefined && value !== null ? value : fallback;
@@ -19,19 +19,21 @@ export const PresenceMapper = {
       id: ensureValue(row[0]),
       eventId: ensureValue(row[1]),
       userId: ensureValue(row[2]),
-      presentAt: ensureValue(row[3], new Date().toISOString()),
-      createdAt: ensureValue(row[4], new Date().toISOString()),
+      activityId: ensureValue(row[3]),
+      presentAt: ensureValue(row[4], new Date().toISOString()),
+      createdAt: ensureValue(row[5], new Date().toISOString()),
     });
   },
 
   toRow(presenceEntity: PresenceEntity): string[] {
-    const { id, eventId, userId, presentAt, createdAt } =
+    const { id, eventId, userId, activityId, presentAt, createdAt } =
       presenceEntity.toPrimitives();
 
     return [
       id,
       eventId,
       userId,
+      activityId,
       presentAt.toISOString(),
       createdAt.toISOString(),
     ];

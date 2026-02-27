@@ -22,6 +22,7 @@ export const createInscriptionUseCaseSpecs = {
     const result = await useCase.execute({
       eventId: "event-1",
       userId: "user-1",
+      activityId: "activity-1",
       status: "pending",
     });
 
@@ -29,6 +30,7 @@ export const createInscriptionUseCaseSpecs = {
     expect(repository.findByEventAndUserMock.calls[0]).to.deep.equal([
       "event-1",
       "user-1",
+      "activity-1",
     ]);
     expect(repository.createMock.callCount).to.equal(1);
   },

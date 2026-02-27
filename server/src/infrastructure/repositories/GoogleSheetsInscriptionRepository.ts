@@ -29,7 +29,7 @@ export class GoogleSheetsInscriptionRepository extends InscriptionRepository {
   ) {
     super();
 
-    const [sheetName, cellRange = "A:F"] = options.range.split("!");
+    const [sheetName, cellRange = "A:G"] = options.range.split("!");
     this.sheetName = sheetName;
 
     const [startCell, endCell] = cellRange.split(":");
@@ -77,7 +77,8 @@ export class GoogleSheetsInscriptionRepository extends InscriptionRepository {
 
   async findByEventAndUser(
     eventId: string,
-    userId: string
+    userId: string,
+    activityId?: string
   ): Promise<InscriptionEntity | null> {
     const rows = await this.googleSheetsClient.getValues(this.options.range);
 
@@ -87,7 +88,10 @@ export class GoogleSheetsInscriptionRepository extends InscriptionRepository {
 
     const dataRows = rows.slice(1);
     const row = dataRows.find(
-      (current) => current?.[1] === eventId && current?.[2] === userId
+      (current) =>
+        current?.[1] === eventId &&
+        current?.[2] === userId &&
+        (activityId === undefined ? true : (current?.[3] ?? "") === activityId)
     );
 
     return row ? InscriptionMapper.toEntity(row) : null;

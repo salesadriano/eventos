@@ -5,7 +5,8 @@ export abstract class InscriptionRepository {
   abstract findById(id: string): Promise<InscriptionEntity | null>;
   abstract findByEventAndUser(
     eventId: string,
-    userId: string
+    userId: string,
+    activityId?: string
   ): Promise<InscriptionEntity | null>;
   abstract create(
     inscriptionEntity: InscriptionEntity

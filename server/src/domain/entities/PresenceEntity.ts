@@ -5,6 +5,7 @@ export interface PresenceCreateProps {
   id?: string;
   eventId: string;
   userId: string;
+  activityId?: string;
   presentAt?: Date | string;
 }
 
@@ -12,6 +13,7 @@ export interface PresencePrimitive {
   id: string;
   eventId: string;
   userId: string;
+  activityId: string;
   presentAt: Date;
   createdAt: Date;
 }
@@ -40,6 +42,7 @@ export class PresenceEntity {
   public readonly id: string;
   public readonly eventId: string;
   public readonly userId: string;
+  public readonly activityId: string;
   public readonly presentAt: Date;
   public readonly createdAt: Date;
 
@@ -47,12 +50,14 @@ export class PresenceEntity {
     id,
     eventId,
     userId,
+    activityId,
     presentAt,
     createdAt,
   }: PresenceConstructorProps) {
     this.id = id ?? generateUUID();
     this.eventId = eventId;
     this.userId = userId;
+    this.activityId = activityId?.trim() ?? "";
 
     const now = new Date();
     this.presentAt = toDate(presentAt, now);
@@ -89,6 +94,7 @@ export class PresenceEntity {
       id: this.id,
       eventId: this.eventId,
       userId: this.userId,
+      activityId: this.activityId,
       presentAt: this.presentAt,
       createdAt: this.createdAt,
     };

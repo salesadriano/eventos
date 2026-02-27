@@ -4,6 +4,7 @@ const HEADER = [
   "id",
   "eventId",
   "userId",
+  "activityId",
   "status",
   "createdAt",
   "updatedAt",
@@ -26,12 +27,13 @@ export const InscriptionMapper = {
       id: ensureValue(row[0]),
       eventId: ensureValue(row[1]),
       userId: ensureValue(row[2]),
-      status: (ensureValue(row[3]) || "pending") as
+      activityId: ensureValue(row[3]),
+      status: (ensureValue(row[4]) || "pending") as
         | "pending"
         | "confirmed"
         | "cancelled",
-      createdAt: ensureValue(row[4], new Date().toISOString()),
-      updatedAt: ensureValue(row[5], new Date().toISOString()),
+      createdAt: ensureValue(row[5], new Date().toISOString()),
+      updatedAt: ensureValue(row[6], new Date().toISOString()),
     });
   },
 
@@ -40,6 +42,7 @@ export const InscriptionMapper = {
       id,
       eventId,
       userId,
+      activityId,
       status,
       createdAt,
       updatedAt,
@@ -49,6 +52,7 @@ export const InscriptionMapper = {
       id,
       eventId,
       userId,
+      activityId,
       status,
       createdAt.toISOString(),
       updatedAt.toISOString(),

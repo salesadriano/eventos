@@ -10,7 +10,6 @@ export class PresenceRepositoryStub extends PresenceRepository {
     PresenceEntity.create({
       eventId: "event",
       userId: "user",
-      status: "pending",
     })
   );
   readonly deleteMock = new AsyncMock<[string], void>(undefined);

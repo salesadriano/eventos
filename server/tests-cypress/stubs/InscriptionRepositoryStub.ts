@@ -8,7 +8,7 @@ export class InscriptionRepositoryStub extends InscriptionRepository {
     null
   );
   readonly findByEventAndUserMock = new AsyncMock<
-    [string, string],
+    [string, string, string?],
     InscriptionEntity | null
   >(null);
   readonly createMock = new AsyncMock<[InscriptionEntity], InscriptionEntity>(
@@ -30,9 +30,10 @@ export class InscriptionRepositoryStub extends InscriptionRepository {
 
   async findByEventAndUser(
     eventId: string,
-    userId: string
+    userId: string,
+    activityId?: string
   ): Promise<InscriptionEntity | null> {
-    return this.findByEventAndUserMock.invoke(eventId, userId);
+    return this.findByEventAndUserMock.invoke(eventId, userId, activityId);
   }
 
   async create(

@@ -4,6 +4,7 @@ export interface PresenceResponseDto {
   id: string;
   eventId: string;
   userId: string;
+  activityId: string;
   presentAt: string;
   createdAt: string;
 }
@@ -15,6 +16,7 @@ export const PresenceDtoMapper = {
       id: primitives.id,
       eventId: primitives.eventId,
       userId: primitives.userId,
+      activityId: primitives.activityId,
       presentAt: primitives.presentAt.toISOString(),
       createdAt: primitives.createdAt.toISOString(),
     };

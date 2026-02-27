@@ -7,6 +7,7 @@ export interface InscriptionCreateProps {
   id?: string;
   eventId: string;
   userId: string;
+  activityId?: string;
   status?: InscriptionStatus;
 }
 
@@ -14,6 +15,7 @@ export interface InscriptionPrimitive {
   id: string;
   eventId: string;
   userId: string;
+  activityId: string;
   status: InscriptionStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -43,6 +45,7 @@ export class InscriptionEntity {
   public readonly id: string;
   public readonly eventId: string;
   public readonly userId: string;
+  public readonly activityId: string;
   public readonly status: InscriptionStatus;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
@@ -51,6 +54,7 @@ export class InscriptionEntity {
     id,
     eventId,
     userId,
+    activityId,
     status,
     createdAt,
     updatedAt,
@@ -58,6 +62,7 @@ export class InscriptionEntity {
     this.id = id ?? generateUUID();
     this.eventId = eventId;
     this.userId = userId;
+    this.activityId = activityId?.trim() ?? "";
     this.status = status ?? "pending";
 
     const now = new Date();
@@ -91,6 +96,7 @@ export class InscriptionEntity {
       id: this.id,
       eventId: this.eventId,
       userId: this.userId,
+      activityId: this.activityId,
       status: this.status,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

@@ -29,7 +29,7 @@ export class GoogleSheetsPresenceRepository extends PresenceRepository {
   ) {
     super();
 
-    const [sheetName, cellRange = "A:E"] = options.range.split("!");
+    const [sheetName, cellRange = "A:F"] = options.range.split("!");
     this.sheetName = sheetName;
 
     const [startCell, endCell] = cellRange.split(":");
