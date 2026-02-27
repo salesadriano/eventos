@@ -1,4 +1,5 @@
 import "./App.css";
+import { useEffect } from "react";
 import brandLogo from "./assets/cgeac-logo.svg";
 import type { Event as EventModel } from "./domain/entities/Event";
 import { Login } from "./presentation/components/Login";
@@ -27,8 +28,30 @@ const formatDate = (value: Date | string): string => {
 };
 
 function App() {
-  const { isAuthenticated, isLoading, user, logout } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    user,
+    logout,
+    completeOAuthCallback,
+  } = useAuth();
   const { events, loading, error, deleteEvent } = useEvents();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const provider = params.get("provider");
+    const code = params.get("code");
+    const state = params.get("state");
+
+    if (provider && code && state) {
+      void completeOAuthCallback({ provider, code, state })
+        .catch(() => undefined)
+        .finally(() => {
+          const nextUrl = `${window.location.origin}${window.location.pathname}`;
+          window.history.replaceState({}, document.title, nextUrl);
+        });
+    }
+  }, [completeOAuthCallback]);
 
   const visitorEvents = events.slice(0, 3);
   const cardsToRender: Array<EventModel | null> = loading

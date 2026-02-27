@@ -18,7 +18,7 @@ export const Login: FC<LoginProps> = ({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, oauthProviders, startOAuthLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +73,25 @@ export const Login: FC<LoginProps> = ({
         <button className="btn primary full" type="submit" disabled={isLoading}>
           {isLoading ? "Entrando..." : "Entrar"}
         </button>
+        {oauthProviders.length > 0 && (
+          <>
+            <p className="muted" style={{ marginTop: 12 }}>
+              ou continue com
+            </p>
+            <div style={{ display: "grid", gap: 8 }}>
+              {oauthProviders.map((provider) => (
+                <button
+                  key={provider.provider}
+                  className="btn ghost full"
+                  type="button"
+                  onClick={() => void startOAuthLogin(provider.provider)}
+                >
+                  Entrar com {provider.displayName}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </form>
     </section>
   );
