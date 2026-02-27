@@ -6,8 +6,14 @@ export interface CreateEventPayload {
   id?: string;
   title: string;
   description?: string;
-  date: Date | string;
+  date?: Date | string;
+  dateInit?: Date | string;
+  dateFinal?: Date | string;
+  inscriptionInit?: Date | string;
+  inscriptionFinal?: Date | string;
   location?: string;
+  appHeaderImageUrl?: string;
+  certificateHeaderImageUrl?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 }

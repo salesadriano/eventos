@@ -11,6 +11,8 @@ export interface EventCreateProps {
   inscriptionInit?: Date | string;
   inscriptionFinal?: Date | string;
   location?: string;
+  appHeaderImageUrl?: string;
+  certificateHeaderImageUrl?: string;
 }
 
 export interface EventPrimitive {
@@ -23,6 +25,8 @@ export interface EventPrimitive {
   inscriptionInit: Date;
   inscriptionFinal: Date;
   location: string;
+  appHeaderImageUrl: string;
+  certificateHeaderImageUrl: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,6 +41,8 @@ export interface EventPrimitiveInput {
   inscriptionInit?: Date | string;
   inscriptionFinal?: Date | string;
   location: string;
+  appHeaderImageUrl?: string;
+  certificateHeaderImageUrl?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -74,6 +80,8 @@ export class EventEntity {
   public readonly inscriptionInit: Date;
   public readonly inscriptionFinal: Date;
   public readonly location: string;
+  public readonly appHeaderImageUrl: string;
+  public readonly certificateHeaderImageUrl: string;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
@@ -87,6 +95,8 @@ export class EventEntity {
     inscriptionInit,
     inscriptionFinal,
     location,
+    appHeaderImageUrl,
+    certificateHeaderImageUrl,
     createdAt,
     updatedAt,
   }: EventConstructorProps) {
@@ -108,6 +118,9 @@ export class EventEntity {
     this.inscriptionInit = toDate(inscriptionInit, now);
     this.inscriptionFinal = toDate(inscriptionFinal, now);
     this.location = location ?? "";
+    this.appHeaderImageUrl = appHeaderImageUrl?.trim() ?? "";
+    this.certificateHeaderImageUrl =
+      certificateHeaderImageUrl?.trim() ?? "";
 
     this.createdAt = toDate(createdAt, now);
     this.updatedAt = toDate(updatedAt, now);
@@ -133,6 +146,29 @@ export class EventEntity {
     }
     if (!this.location || this.location.trim().length === 0) {
       throw new ValidationError("Event location is required");
+    }
+
+    if (
+      this.appHeaderImageUrl.length > 0 &&
+      !this.isValidHttpUrl(this.appHeaderImageUrl)
+    ) {
+      throw new ValidationError("Event app header image URL is invalid");
+    }
+
+    if (
+      this.certificateHeaderImageUrl.length > 0 &&
+      !this.isValidHttpUrl(this.certificateHeaderImageUrl)
+    ) {
+      throw new ValidationError("Event certificate header image URL is invalid");
+    }
+  }
+
+  private isValidHttpUrl(value: string): boolean {
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
     }
   }
 
@@ -160,6 +196,8 @@ export class EventEntity {
       inscriptionInit: this.inscriptionInit,
       inscriptionFinal: this.inscriptionFinal,
       location: this.location,
+      appHeaderImageUrl: this.appHeaderImageUrl,
+      certificateHeaderImageUrl: this.certificateHeaderImageUrl,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

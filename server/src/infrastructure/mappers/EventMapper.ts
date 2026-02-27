@@ -9,6 +9,8 @@ const HEADER = [
   "inscriptionInit",
   "inscriptionFinal",
   "location",
+  "appHeaderImageUrl",
+  "certificateHeaderImageUrl",
   "createdAt",
   "updatedAt",
 ];
@@ -35,8 +37,10 @@ export const EventMapper = {
       inscriptionInit: ensureValue(row[5], new Date().toISOString()),
       inscriptionFinal: ensureValue(row[6], new Date().toISOString()),
       location: ensureValue(row[7]),
-      createdAt: ensureValue(row[8], new Date().toISOString()),
-      updatedAt: ensureValue(row[9], new Date().toISOString()),
+      appHeaderImageUrl: ensureValue(row[8]),
+      certificateHeaderImageUrl: ensureValue(row[9]),
+      createdAt: ensureValue(row[10], new Date().toISOString()),
+      updatedAt: ensureValue(row[11], new Date().toISOString()),
     });
   },
 
@@ -50,6 +54,8 @@ export const EventMapper = {
       inscriptionInit,
       inscriptionFinal,
       location,
+      appHeaderImageUrl,
+      certificateHeaderImageUrl,
       createdAt,
       updatedAt,
     } = eventEntity.toPrimitives();
@@ -63,6 +69,8 @@ export const EventMapper = {
       inscriptionInit.toISOString(),
       inscriptionFinal.toISOString(),
       location,
+      appHeaderImageUrl,
+      certificateHeaderImageUrl,
       createdAt.toISOString(),
       updatedAt.toISOString(),
     ];

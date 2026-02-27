@@ -54,7 +54,7 @@ const corsOrigins = process.env.CORS_ALLOW_ORIGIN
 const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY!;
 
 const defaultRanges = {
-  events: process.env.GOOGLE_SHEETS_EVENTS_RANGE ?? "events!A:J",
+  events: process.env.GOOGLE_SHEETS_EVENTS_RANGE ?? "events!A:L",
   users: process.env.GOOGLE_SHEETS_USERS_RANGE ?? "users!A:K",
   inscriptions:
     process.env.GOOGLE_SHEETS_INSCRIPTIONS_RANGE ?? "inscriptions!A:G",

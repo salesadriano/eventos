@@ -9,6 +9,8 @@ const basePayload = {
   title: "New Event",
   description: "Event description",
   location: "Online",
+  appHeaderImageUrl: "https://cdn.example.com/app-header.png",
+  certificateHeaderImageUrl: "https://cdn.example.com/certificate-header.png",
   date: new Date("2024-02-02T00:00:00Z"),
   inscriptionInit: new Date("2024-01-01T00:00:00Z"),
   inscriptionFinal: new Date("2024-01-15T00:00:00Z"),
@@ -32,7 +34,25 @@ export const createEventUseCaseSpecs = {
       title: basePayload.title,
       description: basePayload.description,
       location: basePayload.location,
+      appHeaderImageUrl: basePayload.appHeaderImageUrl,
+      certificateHeaderImageUrl: basePayload.certificateHeaderImageUrl,
     });
+  },
+
+  async throwsWhenImageUrlIsInvalid(): Promise<void> {
+    const repository = new EventRepositoryStub();
+
+    const useCase = new CreateEventUseCase(repository);
+
+    await expectAsyncError(
+      () =>
+        useCase.execute({
+          ...basePayload,
+          appHeaderImageUrl: "ftp://invalid-image-url",
+        }),
+      ValidationError
+    );
+    expect(repository.createMock.callCount).to.equal(0);
   },
 
   async throwsWhenDuplicateId(): Promise<void> {

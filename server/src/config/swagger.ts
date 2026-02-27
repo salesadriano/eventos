@@ -154,7 +154,19 @@ const options: swaggerJsdoc.Options = {
         },
         Event: {
           type: "object",
-          required: ["id", "title", "description", "date", "location", "createdAt", "updatedAt"],
+          required: [
+            "id",
+            "title",
+            "description",
+            "date",
+            "dateInit",
+            "dateFinal",
+            "inscriptionInit",
+            "inscriptionFinal",
+            "location",
+            "createdAt",
+            "updatedAt",
+          ],
           properties: {
             id: {
               type: "string",
@@ -177,10 +189,45 @@ const options: swaggerJsdoc.Options = {
               description: "Event date and time in ISO 8601 format",
               example: "2024-07-15T18:00:00Z",
             },
+            dateInit: {
+              type: "string",
+              format: "date-time",
+              description: "Event start date and time in ISO 8601 format",
+              example: "2024-07-15T18:00:00Z",
+            },
+            dateFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Event end date and time in ISO 8601 format",
+              example: "2024-07-15T22:00:00Z",
+            },
+            inscriptionInit: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription start date and time in ISO 8601 format",
+              example: "2024-07-01T00:00:00Z",
+            },
+            inscriptionFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription end date and time in ISO 8601 format",
+              example: "2024-07-14T23:59:59Z",
+            },
             location: {
               type: "string",
               description: "Event location",
               example: "Central Park, New York",
+            },
+            appHeaderImageUrl: {
+              type: "string",
+              description: "Optional application header image URL",
+              example: "https://cdn.example.com/events/event-123/app-header.png",
+            },
+            certificateHeaderImageUrl: {
+              type: "string",
+              description: "Optional certificate header image URL",
+              example:
+                "https://cdn.example.com/events/event-123/certificate-header.png",
             },
             createdAt: {
               type: "string",
@@ -232,7 +279,15 @@ const options: swaggerJsdoc.Options = {
         },
         CreateEventRequest: {
           type: "object",
-          required: ["title", "description", "date", "location"],
+          required: [
+            "title",
+            "description",
+            "dateInit",
+            "dateFinal",
+            "inscriptionInit",
+            "inscriptionFinal",
+            "location",
+          ],
           properties: {
             title: {
               type: "string",
@@ -244,16 +299,45 @@ const options: swaggerJsdoc.Options = {
               description: "Event description",
               example: "A fun summer festival with music and food",
             },
-            date: {
+            dateInit: {
               type: "string",
               format: "date-time",
-              description: "Event date and time in ISO 8601 format",
+              description: "Event start date and time in ISO 8601 format",
               example: "2024-07-15T18:00:00Z",
+            },
+            dateFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Event end date and time in ISO 8601 format",
+              example: "2024-07-15T22:00:00Z",
+            },
+            inscriptionInit: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription start date and time in ISO 8601 format",
+              example: "2024-07-01T00:00:00Z",
+            },
+            inscriptionFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription end date and time in ISO 8601 format",
+              example: "2024-07-14T23:59:59Z",
             },
             location: {
               type: "string",
               description: "Event location",
               example: "Central Park, New York",
+            },
+            appHeaderImageUrl: {
+              type: "string",
+              description: "Optional application header image URL",
+              example: "https://cdn.example.com/events/event-123/app-header.png",
+            },
+            certificateHeaderImageUrl: {
+              type: "string",
+              description: "Optional certificate header image URL",
+              example:
+                "https://cdn.example.com/events/event-123/certificate-header.png",
             },
           },
         },
@@ -270,16 +354,45 @@ const options: swaggerJsdoc.Options = {
               description: "Event description",
               example: "A fun summer festival with music and food",
             },
-            date: {
+            dateInit: {
               type: "string",
               format: "date-time",
-              description: "Event date and time in ISO 8601 format",
+              description: "Event start date and time in ISO 8601 format",
               example: "2024-07-15T18:00:00Z",
+            },
+            dateFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Event end date and time in ISO 8601 format",
+              example: "2024-07-15T22:00:00Z",
+            },
+            inscriptionInit: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription start date and time in ISO 8601 format",
+              example: "2024-07-01T00:00:00Z",
+            },
+            inscriptionFinal: {
+              type: "string",
+              format: "date-time",
+              description: "Inscription end date and time in ISO 8601 format",
+              example: "2024-07-14T23:59:59Z",
             },
             location: {
               type: "string",
               description: "Event location",
               example: "Central Park, New York",
+            },
+            appHeaderImageUrl: {
+              type: "string",
+              description: "Optional application header image URL",
+              example: "https://cdn.example.com/events/event-123/app-header.png",
+            },
+            certificateHeaderImageUrl: {
+              type: "string",
+              description: "Optional certificate header image URL",
+              example:
+                "https://cdn.example.com/events/event-123/certificate-header.png",
             },
           },
         },

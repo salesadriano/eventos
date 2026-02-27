@@ -27,6 +27,9 @@ export const updateEventUseCaseSpecs = {
     const updated = await useCase.execute(existing.id, {
       title: "Updated title",
       location: "Updated location",
+      appHeaderImageUrl: "https://cdn.example.com/new-app-header.png",
+      certificateHeaderImageUrl:
+        "https://cdn.example.com/new-certificate-header.png",
     });
 
     expect(repository.findByIdMock.calls[0][0]).to.equal(existing.id);
@@ -35,6 +38,9 @@ export const updateEventUseCaseSpecs = {
       id: existing.id,
       title: "Updated title",
       location: "Updated location",
+      appHeaderImageUrl: "https://cdn.example.com/new-app-header.png",
+      certificateHeaderImageUrl:
+        "https://cdn.example.com/new-certificate-header.png",
     });
   },
 
