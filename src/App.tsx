@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import brandLogo from "./assets/cgeac-logo.svg";
 import type { Event as EventModel } from "./domain/entities/Event";
 import { Login } from "./presentation/components/Login";
+import { OperationalFlowsPanel } from "./presentation/components/OperationalFlowsPanel";
 import { useAuth } from "./presentation/hooks/useAuth";
 import { useEvents } from "./presentation/hooks/useEventService";
 
@@ -342,6 +343,7 @@ function App() {
           </div>
         )}
       </div>
+      <OperationalFlowsPanel />
     </section>
   );
 
