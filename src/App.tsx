@@ -5,6 +5,7 @@ import brandLogo from "./assets/cgeac-logo.svg";
 import type { Event as EventModel } from "./domain/entities/Event";
 import { Login } from "./presentation/components/Login";
 import { OperationalFlowsPanel } from "./presentation/components/OperationalFlowsPanel";
+import { SpeakerRepositoryPanel } from "./presentation/components/SpeakerRepositoryPanel";
 import { useAuth } from "./presentation/hooks/useAuth";
 import { useEvents } from "./presentation/hooks/useEventService";
 
@@ -344,6 +345,7 @@ function App() {
         )}
       </div>
       <OperationalFlowsPanel />
+      <SpeakerRepositoryPanel />
     </section>
   );
 
