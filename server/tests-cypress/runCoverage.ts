@@ -11,6 +11,10 @@ import { createInscriptionUseCaseSpecs } from "./specs/inscriptions/CreateInscri
 import { getInscriptionsUseCaseSpecs } from "./specs/inscriptions/GetInscriptionsUseCase.spec";
 import { createPresenceUseCaseSpecs } from "./specs/presences/CreatePresenceUseCase.spec";
 import { getPresencesUseCaseSpecs } from "./specs/presences/GetPresencesUseCase.spec";
+import { testStorageConnectionUseCaseSpecs } from "./specs/repository/TestStorageConnectionUseCase.spec";
+import { validatePresentationUploadUseCaseSpecs } from "./specs/repository/ValidatePresentationUploadUseCase.spec";
+import { createSpeakerUseCaseSpecs } from "./specs/speakers/CreateSpeakerUseCase.spec";
+import { updateSpeakerUseCaseSpecs } from "./specs/speakers/UpdateSpeakerUseCase.spec";
 import { createUserUseCaseSpecs } from "./specs/users/CreateUserUseCase.spec";
 import { deleteUserUseCaseSpecs } from "./specs/users/DeleteUserUseCase.spec";
 import { getUserByIdUseCaseSpecs } from "./specs/users/GetUserByIdUseCase.spec";
@@ -24,6 +28,10 @@ const suites: Record<string, SpecMap> = {
   StartOAuthAuthorizationUseCase: startOAuthAuthorizationUseCaseSpecs,
   EvaluateCertificateEligibilityUseCase: evaluateCertificateEligibilityUseCaseSpecs,
   EvaluateCertificateBatchUseCase: evaluateCertificateBatchUseCaseSpecs,
+  ValidatePresentationUploadUseCase: validatePresentationUploadUseCaseSpecs,
+  TestStorageConnectionUseCase: testStorageConnectionUseCaseSpecs,
+  CreateSpeakerUseCase: createSpeakerUseCaseSpecs,
+  UpdateSpeakerUseCase: updateSpeakerUseCaseSpecs,
   CreateEventUseCase: createEventUseCaseSpecs,
   DeleteEventUseCase: deleteEventUseCaseSpecs,
   GetEventByIdUseCase: getEventByIdUseCaseSpecs,
