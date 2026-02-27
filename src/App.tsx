@@ -1,5 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
+import { useMemo, useState } from "react";
 import brandLogo from "./assets/cgeac-logo.svg";
 import type { Event as EventModel } from "./domain/entities/Event";
 import { Login } from "./presentation/components/Login";
@@ -35,7 +36,21 @@ function App() {
     logout,
     completeOAuthCallback,
   } = useAuth();
-  const { events, loading, error, deleteEvent } = useEvents();
+  const { events, loading, error, deleteEvent, createEvent } = useEvents();
+  const [filterText, setFilterText] = useState("");
+  const [page, setPage] = useState(1);
+  const [isSavingEvent, setIsSavingEvent] = useState(false);
+  const [eventForm, setEventForm] = useState({
+    title: "",
+    description: "",
+    location: "",
+    dateInit: "",
+    dateFinal: "",
+    inscriptionInit: "",
+    inscriptionFinal: "",
+    appHeaderImageUrl: "",
+    certificateHeaderImageUrl: "",
+  });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -57,6 +72,26 @@ function App() {
   const cardsToRender: Array<EventModel | null> = loading
     ? Array.from({ length: 3 }, () => null)
     : visitorEvents;
+
+  const filteredAdminEvents = useMemo(() => {
+    const normalized = filterText.trim().toLowerCase();
+    if (!normalized) {
+      return events;
+    }
+
+    return events.filter((event) =>
+      [event.title, event.location].some((field) =>
+        String(field || "").toLowerCase().includes(normalized)
+      )
+    );
+  }, [events, filterText]);
+
+  const pageSize = 5;
+  const totalPages = Math.max(1, Math.ceil(filteredAdminEvents.length / pageSize));
+  const paginatedAdminEvents = filteredAdminEvents.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   if (isLoading) {
     return (
@@ -89,6 +124,169 @@ function App() {
         </div>
         <span>{user?.email}</span>
       </div>
+      <form
+        className="login-form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setIsSavingEvent(true);
+          void createEvent({
+            title: eventForm.title,
+            description: eventForm.description,
+            location: eventForm.location,
+            date: new Date(eventForm.dateInit || new Date()),
+            dateInit: new Date(eventForm.dateInit || new Date()),
+            dateFinal: new Date(eventForm.dateFinal || eventForm.dateInit || new Date()),
+            inscriptionInit: new Date(
+              eventForm.inscriptionInit || eventForm.dateInit || new Date()
+            ),
+            inscriptionFinal: new Date(
+              eventForm.inscriptionFinal || eventForm.dateFinal || new Date()
+            ),
+            appHeaderImageUrl: eventForm.appHeaderImageUrl,
+            certificateHeaderImageUrl: eventForm.certificateHeaderImageUrl,
+          })
+            .then(() => {
+              setEventForm({
+                title: "",
+                description: "",
+                location: "",
+                dateInit: "",
+                dateFinal: "",
+                inscriptionInit: "",
+                inscriptionFinal: "",
+                appHeaderImageUrl: "",
+                certificateHeaderImageUrl: "",
+              });
+            })
+            .finally(() => setIsSavingEvent(false));
+        }}
+      >
+        <label className="form-field">
+          <span>Título</span>
+          <input
+            value={eventForm.title}
+            onChange={(event) =>
+              setEventForm((current) => ({ ...current, title: event.target.value }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Descrição</span>
+          <input
+            value={eventForm.description}
+            onChange={(event) =>
+              setEventForm((current) => ({
+                ...current,
+                description: event.target.value,
+              }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Local</span>
+          <input
+            value={eventForm.location}
+            onChange={(event) =>
+              setEventForm((current) => ({ ...current, location: event.target.value }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Início do evento</span>
+          <input
+            type="datetime-local"
+            value={eventForm.dateInit}
+            onChange={(event) =>
+              setEventForm((current) => ({ ...current, dateInit: event.target.value }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Fim do evento</span>
+          <input
+            type="datetime-local"
+            value={eventForm.dateFinal}
+            onChange={(event) =>
+              setEventForm((current) => ({ ...current, dateFinal: event.target.value }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Início das inscrições</span>
+          <input
+            type="datetime-local"
+            value={eventForm.inscriptionInit}
+            onChange={(event) =>
+              setEventForm((current) => ({
+                ...current,
+                inscriptionInit: event.target.value,
+              }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Fim das inscrições</span>
+          <input
+            type="datetime-local"
+            value={eventForm.inscriptionFinal}
+            onChange={(event) =>
+              setEventForm((current) => ({
+                ...current,
+                inscriptionFinal: event.target.value,
+              }))
+            }
+            required
+          />
+        </label>
+        <label className="form-field">
+          <span>Imagem header app (URL)</span>
+          <input
+            type="url"
+            value={eventForm.appHeaderImageUrl}
+            onChange={(event) =>
+              setEventForm((current) => ({
+                ...current,
+                appHeaderImageUrl: event.target.value,
+              }))
+            }
+            placeholder="https://..."
+          />
+        </label>
+        <label className="form-field">
+          <span>Imagem header certificado (URL)</span>
+          <input
+            type="url"
+            value={eventForm.certificateHeaderImageUrl}
+            onChange={(event) =>
+              setEventForm((current) => ({
+                ...current,
+                certificateHeaderImageUrl: event.target.value,
+              }))
+            }
+            placeholder="https://..."
+          />
+        </label>
+        <button className="btn primary full" type="submit" disabled={isSavingEvent}>
+          {isSavingEvent ? "Salvando..." : "Cadastrar evento"}
+        </button>
+      </form>
+      <label className="form-field">
+        <span>Filtrar eventos</span>
+        <input
+          value={filterText}
+          placeholder="Título ou local"
+          onChange={(event) => {
+            setFilterText(event.target.value);
+            setPage(1);
+          }}
+        />
+      </label>
       <div className="dashboard-events">
         {loading && <p>Carregando eventos...</p>}
         {error && <p className="error-text">Erro: {error.message}</p>}
@@ -97,12 +295,20 @@ function App() {
         )}
         {!loading &&
           !error &&
-          events.map((event) => (
+          paginatedAdminEvents.map((event) => (
             <article key={event.id} className="dashboard-event-item">
               <div>
                 <h4>{event.title}</h4>
-                <p className="muted">{formatDate(event.date)}</p>
+                <p className="muted">
+                  {formatDate(event.dateInit ?? event.date)} até{" "}
+                  {formatDate(event.dateFinal ?? event.date)}
+                </p>
                 <small>{event.location}</small>
+                {(event.appHeaderImageUrl || event.certificateHeaderImageUrl) && (
+                  <small>
+                    Identidade visual configurada
+                  </small>
+                )}
               </div>
               <button
                 className="btn danger ghost"
@@ -112,6 +318,29 @@ function App() {
               </button>
             </article>
           ))}
+        {!loading && !error && totalPages > 1 && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button
+              className="btn ghost"
+              type="button"
+              disabled={page <= 1}
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+            >
+              Anterior
+            </button>
+            <span className="muted">Página {page} de {totalPages}</span>
+            <button
+              className="btn ghost"
+              type="button"
+              disabled={page >= totalPages}
+              onClick={() =>
+                setPage((current) => Math.min(totalPages, current + 1))
+              }
+            >
+              Próxima
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
