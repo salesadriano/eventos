@@ -15,7 +15,7 @@ export interface LoginResponse {
 }
 
 export interface RefreshTokenRequest {
-  refreshToken: string;
+  refreshToken?: string;
 }
 
 export interface RefreshTokenResponse {
@@ -32,3 +32,36 @@ export interface ValidateTokenResponse {
   };
 }
 
+export interface OAuthProviderResponse {
+  provider: string;
+  displayName: string;
+}
+
+export interface StartOAuthRequest {
+  codeChallenge: string;
+  redirectUri?: string;
+}
+
+export interface StartOAuthResponse {
+  provider: string;
+  state: string;
+  authorizationUrl: string;
+  expiresAt: string;
+}
+
+export interface OAuthCallbackRequest {
+  state: string;
+  code: string;
+  codeVerifier: string;
+  redirectUri?: string;
+}
+
+export interface OAuthCallbackResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    profile: string;
+  };
+}

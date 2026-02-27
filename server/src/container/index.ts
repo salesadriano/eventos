@@ -1,5 +1,8 @@
 import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
+import { ListOAuthProvidersUseCase } from "../application/usecases/auth/ListOAuthProvidersUseCase";
+import { OAuthCallbackUseCase } from "../application/usecases/auth/OAuthCallbackUseCase";
 import { RefreshTokenUseCase } from "../application/usecases/auth/RefreshTokenUseCase";
+import { StartOAuthAuthorizationUseCase } from "../application/usecases/auth/StartOAuthAuthorizationUseCase";
 import { ValidateTokenUseCase } from "../application/usecases/auth/ValidateTokenUseCase";
 import { SendEmailUseCase } from "../application/usecases/email/SendEmailUseCase";
 import { CreateEventUseCase } from "../application/usecases/events/CreateEventUseCase";
@@ -24,7 +27,12 @@ import { UpdateUserUseCase } from "../application/usecases/users/UpdateUserUseCa
 import { environment } from "../config/environment";
 import type { IMailClient } from "../domain/repositories/IMailClient";
 import { JwtService } from "../infrastructure/auth/JwtService";
+import { OAuthStateStore } from "../infrastructure/auth/OAuthStateStore";
 import { PasswordService } from "../infrastructure/auth/PasswordService";
+import { TokenHashService } from "../infrastructure/auth/TokenHashService";
+import { GoogleOAuthProviderClient } from "../infrastructure/auth/providers/GoogleOAuthProviderClient";
+import type { OAuthProviderClient } from "../infrastructure/auth/providers/OAuthProviderClient";
+import { OAuthProviderRegistry } from "../infrastructure/auth/providers/OAuthProviderRegistry";
 import { GoogleSheetsClient } from "../infrastructure/google/GoogleSheetsClient";
 import { SmtpMailClient } from "../infrastructure/mail/SmtpMailClient";
 import { GoogleSheetsEventRepository } from "../infrastructure/repositories/GoogleSheetsEventRepository";
@@ -86,6 +94,18 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
 
   const passwordService = new PasswordService();
   const jwtService = new JwtService(environment.jwt);
+  const tokenHashService = new TokenHashService(environment.jwt.secret);
+  const oauthStateStore = new OAuthStateStore(environment.oauth.stateTtlSeconds);
+  const oauthProviders = new Map<string, OAuthProviderClient>();
+
+  if (environment.oauth.providers.google) {
+    oauthProviders.set(
+      "google",
+      new GoogleOAuthProviderClient(environment.oauth.providers.google)
+    );
+  }
+
+  const oauthProviderRegistry = new OAuthProviderRegistry(oauthProviders);
 
   const getUsersUseCase = new GetUsersUseCase(userRepository);
   const getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
@@ -99,21 +119,40 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   const loginUseCase = new LoginUseCase(
     userRepository,
     passwordService,
-    jwtService
+    jwtService,
+    tokenHashService
   );
   const refreshTokenUseCase = new RefreshTokenUseCase(
     userRepository,
-    jwtService
+    jwtService,
+    tokenHashService
   );
   const validateTokenUseCase = new ValidateTokenUseCase(
     userRepository,
     jwtService
+  );
+  const listOAuthProvidersUseCase = new ListOAuthProvidersUseCase(
+    oauthProviderRegistry
+  );
+  const startOAuthAuthorizationUseCase = new StartOAuthAuthorizationUseCase(
+    oauthProviderRegistry,
+    oauthStateStore
+  );
+  const oauthCallbackUseCase = new OAuthCallbackUseCase(
+    userRepository,
+    oauthProviderRegistry,
+    oauthStateStore,
+    jwtService,
+    tokenHashService
   );
 
   const authController = new AuthController({
     loginUseCase,
     refreshTokenUseCase,
     validateTokenUseCase,
+    listOAuthProvidersUseCase,
+    startOAuthAuthorizationUseCase,
+    oauthCallbackUseCase,
   });
 
   const eventController = new EventController({

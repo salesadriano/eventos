@@ -1,7 +1,9 @@
 import { ValidationError } from "../../../domain/errors/ApplicationError";
+import { UserEntity } from "../../../domain/entities/UserEntity";
 import type { UserRepository } from "../../../domain/repositories/UserRepository";
 import { JwtService } from "../../../infrastructure/auth/JwtService";
 import { PasswordService } from "../../../infrastructure/auth/PasswordService";
+import { TokenHashService } from "../../../infrastructure/auth/TokenHashService";
 import type { LoginRequest, LoginResponse } from "../../dtos/AuthDtos";
 import { UserDtoMapper } from "../../dtos/UserDtos";
 
@@ -9,7 +11,8 @@ export class LoginUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordService: PasswordService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly tokenHashService: TokenHashService
   ) {}
 
   async execute(request: LoginRequest): Promise<LoginResponse> {
@@ -38,6 +41,16 @@ export class LoginUseCase {
       profile: user.profile,
     });
 
+    await this.userRepository.update(
+      user.id,
+      new UserEntity({
+        ...user.toPrimitives(),
+        refreshTokenHash: this.tokenHashService.hashToken(tokenPair.refreshToken),
+        lastLoginAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
+
     const userDto = UserDtoMapper.toResponse(user);
 
     return {
@@ -52,4 +65,3 @@ export class LoginUseCase {
     };
   }
 }
-

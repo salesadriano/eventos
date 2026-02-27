@@ -2,12 +2,17 @@ import { generateUUID } from "../../shared/utils/generateUUID";
 import { ValidationError } from "../errors/ApplicationError";
 
 export type UserProfile = "admin" | "user" | "guest";
+export type OAuthProvider = "google" | "microsoft" | "github" | "meta" | "linkedin" | "apple";
 
 export interface UserCreateProps {
   id?: string;
   name: string;
   email: string;
   password?: string;
+  oauthProvider?: OAuthProvider;
+  oauthSubject?: string;
+  refreshTokenHash?: string;
+  lastLoginAt?: Date | string;
   profile?: UserProfile;
 }
 
@@ -16,6 +21,10 @@ export interface UserPrimitive {
   name: string;
   email: string;
   password?: string;
+  oauthProvider?: OAuthProvider;
+  oauthSubject?: string;
+  refreshTokenHash?: string;
+  lastLoginAt?: Date;
   profile: UserProfile;
   createdAt: Date;
   updatedAt: Date;
@@ -49,6 +58,10 @@ export class UserEntity {
   public readonly name: string;
   public readonly email: string;
   public readonly password?: string;
+  public readonly oauthProvider?: OAuthProvider;
+  public readonly oauthSubject?: string;
+  public readonly refreshTokenHash?: string;
+  public readonly lastLoginAt?: Date;
   public readonly profile: UserProfile;
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
@@ -58,6 +71,10 @@ export class UserEntity {
     name,
     email,
     password,
+    oauthProvider,
+    oauthSubject,
+    refreshTokenHash,
+    lastLoginAt,
     profile,
     createdAt,
     updatedAt,
@@ -66,6 +83,10 @@ export class UserEntity {
     this.name = name;
     this.email = email;
     this.password = password;
+    this.oauthProvider = oauthProvider;
+    this.oauthSubject = oauthSubject;
+    this.refreshTokenHash = refreshTokenHash;
+    this.lastLoginAt = lastLoginAt ? toDate(lastLoginAt, new Date()) : undefined;
     this.profile = profile ?? "user";
 
     const now = new Date();
@@ -82,6 +103,12 @@ export class UserEntity {
 
     if (!this.email || !emailRegex.test(this.email)) {
       throw new ValidationError("User email is invalid");
+    }
+
+    if ((this.oauthProvider && !this.oauthSubject) || (!this.oauthProvider && this.oauthSubject)) {
+      throw new ValidationError(
+        "OAuth provider and subject must be informed together"
+      );
     }
   }
 
@@ -100,6 +127,10 @@ export class UserEntity {
       name: this.name,
       email: this.email,
       password: this.password,
+      oauthProvider: this.oauthProvider,
+      oauthSubject: this.oauthSubject,
+      refreshTokenHash: this.refreshTokenHash,
+      lastLoginAt: this.lastLoginAt,
       profile: this.profile,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

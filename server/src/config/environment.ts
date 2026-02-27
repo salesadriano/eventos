@@ -32,6 +32,19 @@ const parseSmtpPort = (value: string | undefined): number => {
   return Number.isNaN(parsed) ? 587 : parsed;
 };
 
+const parseInteger = (value: string | undefined, fallback: number): number => {
+  const parsed = Number.parseInt(value ?? `${fallback}`, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+};
+
+const parseScopes = (value: string | undefined, fallback: string[]): string[] =>
+  value
+    ? value
+        .split(/[,\s]+/)
+        .map((scope) => scope.trim())
+        .filter(Boolean)
+    : fallback;
+
 const corsOrigins = process.env.CORS_ALLOW_ORIGIN
   ? process.env.CORS_ALLOW_ORIGIN.split(",")
       .map((origin) => origin.trim())
@@ -42,11 +55,17 @@ const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY!;
 
 const defaultRanges = {
   events: process.env.GOOGLE_SHEETS_EVENTS_RANGE ?? "events!A:J",
-  users: process.env.GOOGLE_SHEETS_USERS_RANGE ?? "users!A:G",
+  users: process.env.GOOGLE_SHEETS_USERS_RANGE ?? "users!A:K",
   inscriptions:
     process.env.GOOGLE_SHEETS_INSCRIPTIONS_RANGE ?? "inscriptions!A:G",
   presences: process.env.GOOGLE_SHEETS_PRESENCES_RANGE ?? "presences!A:F",
 };
+
+const oauthGoogleConfigured = Boolean(
+  process.env.OAUTH_GOOGLE_CLIENT_ID &&
+    process.env.OAUTH_GOOGLE_CLIENT_SECRET &&
+    process.env.OAUTH_GOOGLE_REDIRECT_URI
+);
 
 export const environment = {
   port: parsePort(process.env.PORT),
@@ -79,6 +98,32 @@ export const environment = {
     secret: process.env.JWT_SECRET || "your-secret-key-change-in-production",
     accessTokenExpiry: process.env.JWT_ACCESS_TOKEN_EXPIRY || "15m",
     refreshTokenExpiry: process.env.JWT_REFRESH_TOKEN_EXPIRY || "7d",
+  },
+  oauth: {
+    stateTtlSeconds: parseInteger(process.env.OAUTH_STATE_TTL_SECONDS, 600),
+    providers: {
+      google: oauthGoogleConfigured
+        ? {
+            clientId: process.env.OAUTH_GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
+            redirectUri: process.env.OAUTH_GOOGLE_REDIRECT_URI!,
+            authorizationUrl:
+              process.env.OAUTH_GOOGLE_AUTH_URL ??
+              "https://accounts.google.com/o/oauth2/v2/auth",
+            tokenUrl:
+              process.env.OAUTH_GOOGLE_TOKEN_URL ??
+              "https://oauth2.googleapis.com/token",
+            userInfoUrl:
+              process.env.OAUTH_GOOGLE_USERINFO_URL ??
+              "https://openidconnect.googleapis.com/v1/userinfo",
+            scopes: parseScopes(process.env.OAUTH_GOOGLE_SCOPES, [
+              "openid",
+              "profile",
+              "email",
+            ]),
+          }
+        : undefined,
+    },
   },
 };
 

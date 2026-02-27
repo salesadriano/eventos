@@ -11,14 +11,14 @@ export const createApp = ({ controllers }: ApplicationContainer): Express => {
   const app = express();
 
   const corsOptions: CorsOptions | undefined = environment.cors.allowOrigin
-    ? { origin: environment.cors.allowOrigin }
+    ? { origin: environment.cors.allowOrigin, credentials: true }
     : undefined;
 
   if (corsOptions) {
     app.use(cors(corsOptions));
-  } else {
-    app.use(cors());
   }
+  // If no origin is configured, CORS middleware is not applied,
+  // blocking cross-origin requests by default (same-origin policy).
 
   app.use(express.json());
 

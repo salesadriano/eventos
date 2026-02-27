@@ -1,10 +1,13 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
+import { randomUUID } from "node:crypto";
 import type { Environment } from "../../config/environment";
 
 export interface TokenPayload {
   userId: string;
   email: string;
   profile: string;
+  tokenType?: "access" | "refresh";
+  jti?: string;
 }
 
 export interface TokenPair {
@@ -17,7 +20,7 @@ export class JwtService {
 
   generateAccessToken(payload: TokenPayload): string {
     return jwt.sign(
-      payload,
+      { ...payload, tokenType: "access" },
       this.config.secret,
       { expiresIn: this.config.accessTokenExpiry } as SignOptions
     );
@@ -25,7 +28,7 @@ export class JwtService {
 
   generateRefreshToken(payload: TokenPayload): string {
     return jwt.sign(
-      payload,
+      { ...payload, tokenType: "refresh", jti: randomUUID() },
       this.config.secret,
       { expiresIn: this.config.refreshTokenExpiry } as SignOptions
     );
@@ -41,6 +44,9 @@ export class JwtService {
   verifyToken(token: string): TokenPayload {
     try {
       const decoded = jwt.verify(token, this.config.secret) as TokenPayload;
+      if (decoded.tokenType === "refresh") {
+        throw new Error("Invalid token");
+      }
       return decoded;
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
@@ -56,6 +62,9 @@ export class JwtService {
   verifyRefreshToken(token: string): TokenPayload {
     try {
       const decoded = jwt.verify(token, this.config.secret) as TokenPayload;
+      if (decoded.tokenType && decoded.tokenType !== "refresh") {
+        throw new Error("Invalid refresh token");
+      }
       return decoded;
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
@@ -68,4 +77,3 @@ export class JwtService {
     }
   }
 }
-

@@ -85,6 +85,28 @@ export class GoogleSheetsUserRepository extends UserRepository {
     return row ? UserMapper.toEntity(row) : null;
   }
 
+  async findByOAuthIdentity(
+    provider: string,
+    subject: string
+  ): Promise<UserEntity | null> {
+    const rows = await this.googleSheetsClient.getValues(this.options.range);
+
+    if (!rows || rows.length <= 1) {
+      return null;
+    }
+
+    const dataRows = rows.slice(1);
+    const match = dataRows.find((current) => {
+      const mapped = UserMapper.toEntity(current);
+      return (
+        mapped?.oauthProvider?.toLowerCase() === provider.toLowerCase() &&
+        mapped?.oauthSubject === subject
+      );
+    });
+
+    return match ? UserMapper.toEntity(match) : null;
+  }
+
   async create(user: UserEntity): Promise<UserEntity> {
     const values = [UserMapper.toRow(user)];
     await this.googleSheetsClient.appendValues(this.options.range, values);

@@ -1,3 +1,5 @@
+import { refreshTokenUseCaseSpecs } from "./specs/auth/RefreshTokenUseCase.spec";
+import { startOAuthAuthorizationUseCaseSpecs } from "./specs/auth/StartOAuthAuthorizationUseCase.spec";
 import { createEventUseCaseSpecs } from "./specs/events/CreateEventUseCase.spec";
 import { deleteEventUseCaseSpecs } from "./specs/events/DeleteEventUseCase.spec";
 import { getEventByIdUseCaseSpecs } from "./specs/events/GetEventByIdUseCase.spec";
@@ -15,6 +17,8 @@ import { updateUserUseCaseSpecs } from "./specs/users/UpdateUserUseCase.spec";
 import { registerUseCaseSpecs } from "./utils/registerUseCaseSpecs";
 
 const suites = {
+  RefreshTokenUseCase: refreshTokenUseCaseSpecs,
+  StartOAuthAuthorizationUseCase: startOAuthAuthorizationUseCaseSpecs,
   CreateEventUseCase: createEventUseCaseSpecs,
   DeleteEventUseCase: deleteEventUseCaseSpecs,
   GetEventByIdUseCase: getEventByIdUseCaseSpecs,
