@@ -52,6 +52,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setUser(response.user);
   };
 
+  const register = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<void> => {
+    const response = await apiClient.post<{
+      accessToken: string;
+      refreshToken: string;
+      user: AuthUser;
+    }>(
+      "/auth/register",
+      { name, email, password },
+      { skipAuth: true }
+    );
+
+    tokenStorage.setTokens(response.accessToken, response.refreshToken);
+    setUser(response.user);
+  };
+
   const loadOAuthProviders = async (): Promise<void> => {
     try {
       const providers = await apiClient.get<OAuthProviderInfo[]>(
@@ -143,6 +162,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         isLoading,
         oauthProviders,
         login,
+        register,
         startOAuthLogin,
         completeOAuthCallback,
         logout,

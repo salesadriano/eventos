@@ -18,6 +18,7 @@ export interface AuthContextType {
   isLoading: boolean;
   oauthProviders: OAuthProviderInfo[];
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   startOAuthLogin: (provider: string) => Promise<void>;
   completeOAuthCallback: (params: {
     provider: string;

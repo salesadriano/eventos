@@ -7,14 +7,17 @@ import type { OAuthCallbackUseCase } from "../../../application/usecases/auth/OA
 import type { RefreshTokenUseCase } from "../../../application/usecases/auth/RefreshTokenUseCase";
 import type { StartOAuthAuthorizationUseCase } from "../../../application/usecases/auth/StartOAuthAuthorizationUseCase";
 import type { ValidateTokenUseCase } from "../../../application/usecases/auth/ValidateTokenUseCase";
+import type { CreateUserUseCase } from "../../../application/usecases/users/CreateUserUseCase";
 import type {
   OAuthCallbackRequest,
   LoginRequest,
   RefreshTokenRequest,
+  RegisterRequest,
   StartOAuthRequest,
 } from "../../../application/dtos/AuthDtos";
 
 interface AuthControllerDependencies {
+  createUserUseCase: CreateUserUseCase;
   loginUseCase: LoginUseCase;
   refreshTokenUseCase: RefreshTokenUseCase;
   validateTokenUseCase: ValidateTokenUseCase;
@@ -25,6 +28,32 @@ interface AuthControllerDependencies {
 
 export class AuthController {
   constructor(private readonly deps: AuthControllerDependencies) {}
+
+  register = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const registerRequest = req.body as RegisterRequest;
+      await this.deps.createUserUseCase.execute({
+        name: registerRequest.name,
+        email: registerRequest.email,
+        password: registerRequest.password,
+        profile: "user",
+      });
+
+      const result = await this.deps.loginUseCase.execute({
+        email: registerRequest.email,
+        password: registerRequest.password,
+      });
+
+      this.setRefreshTokenCookie(res, result.refreshToken);
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
 
   login = async (
     req: Request,

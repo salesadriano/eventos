@@ -147,6 +147,7 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   );
 
   const authController = new AuthController({
+    createUserUseCase,
     loginUseCase,
     refreshTokenUseCase,
     validateTokenUseCase,

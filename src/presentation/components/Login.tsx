@@ -14,23 +14,31 @@ export const Login: FC<LoginProps> = ({
   description,
   id,
 }) => {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, oauthProviders, startOAuthLogin } = useAuth();
+  const { login, register, oauthProviders, startOAuthLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
     try {
-      await login(email, password);
+      if (mode === "login") {
+        await login(email, password);
+      } else {
+        await register(name, email, password);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Não foi possível acessar. Verifique suas credenciais."
+          : mode === "login"
+          ? "Não foi possível acessar. Verifique suas credenciais."
+          : "Não foi possível concluir o autocadastro."
       );
     } finally {
       setIsLoading(false);
@@ -42,11 +50,24 @@ export const Login: FC<LoginProps> = ({
       <div className="panel-header">
         <p className="eyebrow">Portal interno</p>
         <div>
-          <h3>{title}</h3>
+          <h3>{mode === "login" ? title : "Autocadastro"}</h3>
           {description && <p className="muted">{description}</p>}
         </div>
       </div>
       <form className="login-form" onSubmit={handleSubmit}>
+        {mode === "register" && (
+          <label className="form-field">
+            <span>Nome</span>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Seu nome completo"
+            />
+          </label>
+        )}
         <label className="form-field">
           <span>Email institucional</span>
           <input
@@ -71,9 +92,28 @@ export const Login: FC<LoginProps> = ({
         </label>
         {error && <p className="error-text">{error}</p>}
         <button className="btn primary full" type="submit" disabled={isLoading}>
-          {isLoading ? "Entrando..." : "Entrar"}
+          {isLoading
+            ? mode === "login"
+              ? "Entrando..."
+              : "Cadastrando..."
+            : mode === "login"
+            ? "Entrar"
+            : "Criar conta"}
         </button>
-        {oauthProviders.length > 0 && (
+        <button
+          className="btn ghost full"
+          type="button"
+          onClick={() => {
+            setError(null);
+            setMode((current) => (current === "login" ? "register" : "login"));
+          }}
+          disabled={isLoading}
+        >
+          {mode === "login"
+            ? "Não tenho conta (autocadastro)"
+            : "Já tenho conta"}
+        </button>
+        {mode === "login" && oauthProviders.length > 0 && (
           <>
             <p className="muted" style={{ marginTop: 12 }}>
               ou continue com

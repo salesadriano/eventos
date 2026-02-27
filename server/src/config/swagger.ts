@@ -101,6 +101,15 @@ const options: swaggerJsdoc.Options = {
             password: { type: "string" },
           },
         },
+        RegisterRequest: {
+          type: "object",
+          required: ["name", "email", "password"],
+          properties: {
+            name: { type: "string" },
+            email: { type: "string", format: "email" },
+            password: { type: "string" },
+          },
+        },
         LoginResponse: {
           type: "object",
           required: ["accessToken", "refreshToken", "user"],

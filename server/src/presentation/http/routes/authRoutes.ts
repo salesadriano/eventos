@@ -6,6 +6,30 @@ export const createAuthRoutes = (authController: AuthController): Router => {
 
   /**
    * @swagger
+   * /auth/register:
+   *   post:
+   *     summary: Register a new user account
+   *     tags: [Auth]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/RegisterRequest'
+   *     responses:
+   *       201:
+   *         description: Registration successful
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/LoginResponse'
+   *       400:
+   *         description: Invalid request data
+   */
+  router.post("/register", authController.register);
+
+  /**
+   * @swagger
    * /auth/providers:
    *   get:
    *     summary: List enabled OAuth providers
