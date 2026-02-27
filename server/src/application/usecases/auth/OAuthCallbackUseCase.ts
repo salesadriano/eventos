@@ -1,5 +1,8 @@
 import { createHash } from "crypto";
-import { UserEntity, type OAuthProvider } from "../../../domain/entities/UserEntity";
+import {
+  UserEntity,
+  type OAuthProvider,
+} from "../../../domain/entities/UserEntity";
 import {
   UnauthorizedError,
   ValidationError,
@@ -44,13 +47,13 @@ export class OAuthCallbackUseCase {
     private readonly providerRegistry: OAuthProviderRegistry,
     private readonly oauthStateStore: OAuthStateStore,
     private readonly jwtService: JwtService,
-    private readonly tokenHashService: TokenHashService
+    private readonly tokenHashService: TokenHashService,
   ) {}
 
   async execute(request: OAuthCallbackRequest): Promise<OAuthCallbackResponse> {
     const stateContext = this.oauthStateStore.consume(
       request.state,
-      request.provider
+      request.provider,
     );
 
     const expectedCodeChallenge = stateContext.codeChallenge;
@@ -73,11 +76,13 @@ export class OAuthCallbackUseCase {
 
     let user = await this.userRepository.findByOAuthIdentity(
       request.provider,
-      profile.subject
+      profile.subject,
     );
 
     if (!user) {
-      const existingByEmail = await this.userRepository.findByEmail(profile.email);
+      const existingByEmail = await this.userRepository.findByEmail(
+        profile.email,
+      );
 
       if (existingByEmail) {
         user = await this.userRepository.update(
@@ -88,7 +93,7 @@ export class OAuthCallbackUseCase {
             oauthSubject: profile.subject,
             lastLoginAt: new Date(),
             updatedAt: new Date(),
-          })
+          }),
         );
       } else {
         user = await this.userRepository.create(
@@ -99,7 +104,7 @@ export class OAuthCallbackUseCase {
             oauthSubject: profile.subject,
             lastLoginAt: new Date(),
             profile: "user",
-          })
+          }),
         );
       }
     }

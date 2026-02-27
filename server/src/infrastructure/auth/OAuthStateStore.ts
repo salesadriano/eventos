@@ -14,7 +14,11 @@ export class OAuthStateStore {
 
   constructor(private readonly ttlInSeconds: number) {}
 
-  create(provider: string, codeChallenge: string, redirectUri: string): OAuthStateContext {
+  create(
+    provider: string,
+    codeChallenge: string,
+    redirectUri: string,
+  ): OAuthStateContext {
     const state = randomUUID();
     const expiresAt = new Date(Date.now() + this.ttlInSeconds * 1000);
 

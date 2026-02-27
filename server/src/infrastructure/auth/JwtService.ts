@@ -1,5 +1,5 @@
-import jwt, { type SignOptions } from "jsonwebtoken";
 import { randomUUID } from "crypto";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import type { Environment } from "../../config/environment";
 
 export interface TokenPayload {
@@ -19,18 +19,16 @@ export class JwtService {
   constructor(private readonly config: Environment["jwt"]) {}
 
   generateAccessToken(payload: TokenPayload): string {
-    return jwt.sign(
-      { ...payload, tokenType: "access" },
-      this.config.secret,
-      { expiresIn: this.config.accessTokenExpiry } as SignOptions
-    );
+    return jwt.sign({ ...payload, tokenType: "access" }, this.config.secret, {
+      expiresIn: this.config.accessTokenExpiry,
+    } as SignOptions);
   }
 
   generateRefreshToken(payload: TokenPayload): string {
     return jwt.sign(
       { ...payload, tokenType: "refresh", jti: randomUUID() },
       this.config.secret,
-      { expiresIn: this.config.refreshTokenExpiry } as SignOptions
+      { expiresIn: this.config.refreshTokenExpiry } as SignOptions,
     );
   }
 
