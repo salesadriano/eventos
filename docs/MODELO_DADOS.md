@@ -20,6 +20,10 @@ erDiagram
         string name
         string email UK
         string password
+        string oauthProvider
+        string oauthSubject
+        string refreshTokenHash
+        datetime lastLoginAt
         enum profile
         datetime createdAt
         datetime updatedAt
@@ -29,6 +33,8 @@ erDiagram
         string id PK
         string title
         string description
+        string appHeaderImageUrl
+        string certificateHeaderImageUrl
         datetime dateInit
         datetime dateFinal
         datetime inscriptionInit
@@ -60,25 +66,30 @@ erDiagram
 
 ### 1. User (Usuário)
 
-Representa um usuário do sistema com informações de autenticação e perfil.
+Representa um usuário do sistema com informações de autenticação federada e perfil.
 
 #### Atributos
 
-| Atributo    | Tipo            | Obrigatório | Descrição                                                    |
-| ----------- | --------------- | ----------- | ------------------------------------------------------------ |
-| `id`        | `string` (UUID) | Sim         | Identificador único do usuário                               |
-| `name`      | `string`        | Sim         | Nome completo do usuário                                     |
-| `email`     | `string`        | Sim         | Email único do usuário (usado para login)                    |
-| `password`  | `string`        | Não         | Senha criptografada (hash bcrypt)                            |
-| `profile`   | `enum`          | Sim         | Perfil do usuário: `admin`, `user`, `guest` (padrão: `user`) |
-| `createdAt` | `Date`          | Sim         | Data de criação do registro                                  |
-| `updatedAt` | `Date`          | Sim         | Data da última atualização                                   |
+| Atributo           | Tipo            | Obrigatório | Descrição                                                    |
+| ------------------ | --------------- | ----------- | ------------------------------------------------------------ |
+| `id`               | `string` (UUID) | Sim         | Identificador único do usuário                               |
+| `name`             | `string`        | Sim         | Nome completo do usuário                                     |
+| `email`            | `string`        | Sim         | Email único do usuário                                       |
+| `password`         | `string`        | Não         | Senha local legada (hash bcrypt), quando aplicável           |
+| `oauthProvider`    | `string`        | Não         | Provedor federado principal (`google`, `microsoft`, etc.)    |
+| `oauthSubject`     | `string`        | Não         | Identificador único do usuário no provedor (`sub`)           |
+| `refreshTokenHash` | `string`        | Não         | Hash do refresh token ativo para rotação segura              |
+| `lastLoginAt`      | `Date`          | Não         | Último login federado bem-sucedido                           |
+| `profile`          | `enum`          | Sim         | Perfil do usuário: `admin`, `user`, `guest` (padrão: `user`) |
+| `createdAt`        | `Date`          | Sim         | Data de criação do registro                                  |
+| `updatedAt`        | `Date`          | Sim         | Data da última atualização                                   |
 
 #### Validações
 
 - Nome não pode estar vazio
 - Email deve ter formato válido (regex: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`)
 - Email deve ser único no sistema
+- Para login OAuth, `oauthProvider + oauthSubject` deve ser único no sistema
 
 #### Diagrama de Classe
 
@@ -89,6 +100,10 @@ classDiagram
         +string name
         +string email
         +string? password
+        +string? oauthProvider
+        +string? oauthSubject
+        +string? refreshTokenHash
+        +Date? lastLoginAt
         +UserProfile profile
         +Date createdAt
         +Date updatedAt
@@ -116,18 +131,20 @@ Representa um evento que pode ter inscrições e presenças registradas.
 
 #### Atributos
 
-| Atributo           | Tipo            | Obrigatório | Descrição                             |
-| ------------------ | --------------- | ----------- | ------------------------------------- |
-| `id`               | `string` (UUID) | Sim         | Identificador único do evento         |
-| `title`            | `string`        | Sim         | Título do evento                      |
-| `description`      | `string`        | Não         | Descrição detalhada do evento         |
-| `dateInit`         | `Date`          | Sim         | Data e hora de início do evento       |
-| `dateFinal`        | `Date`          | Sim         | Data e hora de término do evento      |
-| `inscriptionInit`  | `Date`          | Sim         | Data e hora de início das inscrições  |
-| `inscriptionFinal` | `Date`          | Sim         | Data e hora de término das inscrições |
-| `location`         | `string`        | Sim         | Localização do evento                 |
-| `createdAt`        | `Date`          | Sim         | Data de criação do registro           |
-| `updatedAt`        | `Date`          | Sim         | Data da última atualização            |
+| Atributo                    | Tipo            | Obrigatório | Descrição                                              |
+| --------------------------- | --------------- | ----------- | ------------------------------------------------------ |
+| `id`                        | `string` (UUID) | Sim         | Identificador único do evento                          |
+| `title`                     | `string`        | Sim         | Título do evento                                       |
+| `description`               | `string`        | Não         | Descrição detalhada do evento                          |
+| `appHeaderImageUrl`         | `string`        | Não         | URL da imagem usada no header das páginas da aplicação |
+| `certificateHeaderImageUrl` | `string`        | Não         | URL da imagem usada no cabeçalho do certificado        |
+| `dateInit`                  | `Date`          | Sim         | Data e hora de início do evento                        |
+| `dateFinal`                 | `Date`          | Sim         | Data e hora de término do evento                       |
+| `inscriptionInit`           | `Date`          | Sim         | Data e hora de início das inscrições                   |
+| `inscriptionFinal`          | `Date`          | Sim         | Data e hora de término das inscrições                  |
+| `location`                  | `string`        | Sim         | Localização do evento                                  |
+| `createdAt`                 | `Date`          | Sim         | Data de criação do registro                            |
+| `updatedAt`                 | `Date`          | Sim         | Data da última atualização                             |
 
 **Nota:** O campo `date` está disponível para compatibilidade retroativa, mas é mapeado para `dateInit` internamente.
 
@@ -139,6 +156,7 @@ Representa um evento que pode ter inscrições e presenças registradas.
 - Data inicial de inscrição deve ser válida
 - Data final de inscrição deve ser válida
 - Localização não pode estar vazia
+- Se informadas, imagens de header devem respeitar formato e tamanho permitidos
 
 #### Diagrama de Classe
 
@@ -148,6 +166,8 @@ classDiagram
         +string id
         +string title
         +string description
+        +string? appHeaderImageUrl
+        +string? certificateHeaderImageUrl
         +Date dateInit
         +Date dateFinal
         +Date inscriptionInit
@@ -319,30 +339,36 @@ Cada entidade é armazenada em uma planilha separada no Google Sheets, com a seg
 
 ### Sheet: `users`
 
-| Coluna         | Tipo         | Descrição                        |
-| -------------- | ------------ | -------------------------------- |
-| A: `id`        | string       | UUID do usuário                  |
-| B: `name`      | string       | Nome do usuário                  |
-| C: `email`     | string       | Email do usuário                 |
-| D: `password`  | string       | Hash da senha (bcrypt)           |
-| E: `profile`   | string       | Perfil: `admin`, `user`, `guest` |
-| F: `createdAt` | string (ISO) | Data de criação                  |
-| G: `updatedAt` | string (ISO) | Data de atualização              |
+| Coluna                | Tipo         | Descrição                               |
+| --------------------- | ------------ | --------------------------------------- |
+| A: `id`               | string       | UUID do usuário                         |
+| B: `name`             | string       | Nome do usuário                         |
+| C: `email`            | string       | Email do usuário                        |
+| D: `password`         | string       | Hash de senha local legada (opcional)   |
+| E: `oauthProvider`    | string       | Provedor OAuth principal (opcional)     |
+| F: `oauthSubject`     | string       | Subject federado do provedor (opcional) |
+| G: `refreshTokenHash` | string       | Hash do refresh token ativo (opcional)  |
+| H: `lastLoginAt`      | string (ISO) | Último login federado                   |
+| I: `profile`          | string       | Perfil: `admin`, `user`, `guest`        |
+| J: `createdAt`        | string (ISO) | Data de criação                         |
+| K: `updatedAt`        | string (ISO) | Data de atualização                     |
 
 ### Sheet: `events`
 
-| Coluna                | Tipo         | Descrição              |
-| --------------------- | ------------ | ---------------------- |
-| A: `id`               | string       | UUID do evento         |
-| B: `title`            | string       | Título do evento       |
-| C: `description`      | string       | Descrição do evento    |
-| D: `dateInit`         | string (ISO) | Data/hora de início    |
-| E: `dateFinal`        | string (ISO) | Data/hora de término   |
-| F: `inscriptionInit`  | string (ISO) | Início das inscrições  |
-| G: `inscriptionFinal` | string (ISO) | Término das inscrições |
-| H: `location`         | string       | Localização            |
-| I: `createdAt`        | string (ISO) | Data de criação        |
-| J: `updatedAt`        | string (ISO) | Data de atualização    |
+| Coluna                         | Tipo         | Descrição                                            |
+| ------------------------------ | ------------ | ---------------------------------------------------- |
+| A: `id`                        | string       | UUID do evento                                       |
+| B: `title`                     | string       | Título do evento                                     |
+| C: `description`               | string       | Descrição do evento                                  |
+| D: `appHeaderImageUrl`         | string       | URL da imagem de header da aplicação (opcional)      |
+| E: `certificateHeaderImageUrl` | string       | URL da imagem de cabeçalho do certificado (opcional) |
+| F: `dateInit`                  | string (ISO) | Data/hora de início                                  |
+| G: `dateFinal`                 | string (ISO) | Data/hora de término                                 |
+| H: `inscriptionInit`           | string (ISO) | Início das inscrições                                |
+| I: `inscriptionFinal`          | string (ISO) | Término das inscrições                               |
+| J: `location`                  | string       | Localização                                          |
+| K: `createdAt`                 | string (ISO) | Data de criação                                      |
+| L: `updatedAt`                 | string (ISO) | Data de atualização                                  |
 
 ### Sheet: `inscriptions`
 
@@ -383,17 +409,14 @@ graph TD
 ### Descrição dos Relacionamentos
 
 1. **User ↔ Inscription** (1:N)
-
    - Um usuário pode ter múltiplas inscrições
    - Cada inscrição pertence a um único usuário
 
 2. **Event ↔ Inscription** (1:N)
-
    - Um evento pode ter múltiplas inscrições
    - Cada inscrição pertence a um único evento
 
 3. **User ↔ Presence** (1:N)
-
    - Um usuário pode ter múltiplos registros de presença
    - Cada presença pertence a um único usuário
 
@@ -408,6 +431,7 @@ graph TD
 - A data de início do evento (`dateInit`) deve ser anterior ou igual à data de término (`dateFinal`)
 - O período de inscrições (`inscriptionInit` a `inscriptionFinal`) deve estar dentro ou antes do período do evento
 - Um evento não pode ser criado sem localização
+- Campos de imagem de header são opcionais, porém quando preenchidos devem atender política de formato e tamanho
 
 ### Inscrições
 
@@ -424,7 +448,9 @@ graph TD
 ### Usuários
 
 - O email deve ser único no sistema
-- A senha deve ser criptografada antes de ser armazenada (usando bcrypt)
+- Para autenticação federada, `oauthProvider + oauthSubject` deve identificar unicamente a conta
+- Refresh token deve ser persistido apenas em formato hash para viabilizar rotação segura
+- Senha local (quando existir por legado) deve ser criptografada antes de ser armazenada (bcrypt)
 - O perfil padrão é `user` se não especificado
 
 ## Validações Comuns

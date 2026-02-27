@@ -33,7 +33,7 @@
   // "shutdownAction": "none",
 
   // Uncomment the next line to run commands after the container is created.
-  "postCreateCommand": "npx cypress install",
+  "postCreateCommand": "npx cypress install; apt update && apt install -y gh;  npm ci ; bash ../ajusts.sh; echo y | gh auth login --hostname github.com ssh --web ",
 
   // Configure tool-specific properties.
   "customizations": {

@@ -22,35 +22,14 @@ Well-written user stories communicate requirements in a user-focused way, facili
 
 ### 1. **User Story Format**
 
-````markdown
+```markdown
 # User Story Template
 
 **Title:** [Feature name]
-**Story ID:** [USR-000 / HU 000]
-**Status:** [Draft | In Refinement | Approved]
-**Version:** [v1.0]
 
 **As a** [user role/persona]
 **I want to** [action/capability]
 **So that** [business value/benefit]
-
----
-
-## Context
-
-- **As:** [Role(s) that use this feature]
-- **I want:** [Desired capability]
-- **So that:** [Business/audit/compliance value]
-- **Stakeholders:** [Product Owner, Business Area, Compliance, Tech Lead]
-
----
-
-## Assumptions
-
-- [Operational/system assumption 1]
-- [Data/source assumption 2]
-- [Access/security assumption 3]
-- [Default behavior assumption when no filter/parameter is informed]
 
 ---
 
@@ -64,139 +43,14 @@ Well-written user stories communicate requirements in a user-focused way, facili
 
 ## Acceptance Criteria
 
-### 1. [Scenario name]
-- **Given** [precondition]
-- **When** [action]
-- **Then** [expected result]
-
-### 2. [Access restriction]
-- **Given** [user without required profile]
-- **When** [tries to access feature]
-- **Then** [block access and display standard denial message]
-
-### 3. [Filter criteria]
-- **Given** [user fills one or more filters]
-- **When** [submits filtering]
-- **Then** [apply combined filters using logical AND]
-
-### 4. [Date range filter]
-- **Given** [initial and/or final date provided]
-- **When** [filter is executed]
-- **Then** [return events in period and validate date consistency]
-
-### 5. [Details view]
-- **Given** [user selects one record]
-- **When** [clicks "Details"]
-- **Then** [show full event metadata and payload]
-
-### 6. [Export]
-- **Given** [filtered result set]
-- **When** [clicks "Export"]
-- **Then** [generate file containing only visible/filtered records]
-
-### 7. [Pagination]
-- **Given** [large result set]
-- **When** [accesses listing]
-- **Then** [show paginated results with navigation controls]
+Given [precondition]
+When [action]
+Then [expected result]
 
 Example:
 Given a user is logged in and viewing their cart
 When they add a product to cart
 Then the cart count increases and success message appears
-
----
-
-## Screen Fields
-
-### Filter Section
-
-| Name | Description | Type | Required | Validation / Rule |
-| --- | --- | --- | --- | --- |
-| [Field 1] | [Description] | [text/date/select] | [Yes/No] | [Rule] |
-| [Field 2] | [Description] | [text/date/select] | [Yes/No] | [Rule] |
-
-### Listing Section
-
-| Name | Description | Filterable |
-| --- | --- | --- |
-| [Column 1] | [Description] | [Yes/No] |
-| [Column 2] | [Description] | [Yes/No] |
-
-### Details Section
-
-| Name | Description | Type |
-| --- | --- | --- |
-| [Attribute 1] | [Description] | [text/json/date] |
-| [Attribute 2] | [Description] | [text/json/date] |
-
----
-
-## Specific Rules
-
-### Permission Rules
-
-- [Allowed profile 1] can access all records.
-- [Allowed profile 2] can access all records.
-- [Restricted profile] can access only own records/context.
-- [Sensitive action] must mask protected values in history/audit payload.
-
-### Filtering Rules
-
-- Filters are combined using logical AND.
-- Validate end date must be greater than or equal to start date.
-- If no filter is provided, return default period (e.g., last 7 days).
-- Support start date only, end date only, or both.
-
-### Export Rules
-
-- Export includes only filtered records currently in scope.
-- Exported file must include a header row.
-- Filename pattern: `[feature]_YYYYMMDD_HHMMSS.[csv|pdf]`.
-
-### Pagination Rules
-
-- Default page size: [e.g., 20 items].
-- Allow page navigation and total count visibility.
-- Preserve active filters when changing pages.
-
----
-
-## System Messages
-
-| Situation | Message |
-| --- | --- |
-| Access denied | `[Standard access denied message]` |
-| No results | `[No records found message]` |
-| Data load error | `[Generic load error message]` |
-| Export success | `[Export completed message]` |
-| Export error | `[Export failed message]` |
-| Invalid date filter | `[End date must be after start date message]` |
-
----
-
-## Process Flow (Mermaid)
-
-```mermaid
-flowchart TD
-  A[Authorized user accesses feature] --> B{Has permission?}
-  B -- No --> C[Show access denied message]
-  B -- Yes --> D[Display filters + default period]
-  D --> E[Apply filters]
-  E --> F{Valid date range?}
-  F -- No --> G[Show invalid date message]
-  F -- Yes --> H[Return paginated results]
-  H --> I[View details]
-  H --> J[Export filtered data]
-```
-
----
-
-## Traceability Matrix
-
-| Req ID | Requirement Description | Acceptance Criteria | API/Module | Test Case |
-| --- | --- | --- | --- | --- |
-| [REQ-001] | [Description] | [AC-01, AC-02] | [module/controller/service] | [TC-001] |
-| [REQ-002] | [Description] | [AC-03, AC-04] | [module/controller/service] | [TC-002] |
 
 ---
 
@@ -233,8 +87,7 @@ flowchart TD
 - Performance constraints
 - Accessibility requirements
 - Security considerations
-- Privacy/LGPD considerations (for payloads/audit data)
-````
+```
 
 ### 2. **Story Refinement Process**
 

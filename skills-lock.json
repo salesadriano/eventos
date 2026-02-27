@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "user-story-writing": {
+      "source": "aj-geddes/useful-ai-prompts",
+      "sourceType": "github",
+      "computedHash": "5a5b68e6c547a0bbb14a64a538246bec24b9933e2f470985cec253d22b7d8da1"
+    }
+  }
+}
