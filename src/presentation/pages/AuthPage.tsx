@@ -22,7 +22,10 @@ export const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="app-shell" style={{ alignItems: "center", justifyContent: "center" }}>
+    <div
+      className="app-shell"
+      style={{ alignItems: "center", justifyContent: "center" }}
+    >
       <main className="main-content" style={{ width: "100%", maxWidth: 720 }}>
         <Login
           title="Acessar conta"

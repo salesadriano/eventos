@@ -55,17 +55,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const register = async (
     name: string,
     email: string,
-    password: string
+    password: string,
   ): Promise<void> => {
     const response = await apiClient.post<{
       accessToken: string;
       refreshToken: string;
       user: AuthUser;
-    }>(
-      "/auth/register",
-      { name, email, password },
-      { skipAuth: true }
-    );
+    }>("/auth/register", { name, email, password }, { skipAuth: true });
 
     tokenStorage.setTokens(response.accessToken, response.refreshToken);
     setUser(response.user);
@@ -77,7 +73,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         "/auth/providers",
         {
           skipAuth: true,
-        }
+        },
       );
       setOAuthProviders(providers);
     } catch {
@@ -100,7 +96,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         codeChallenge,
         redirectUri: `${window.location.origin}`,
       },
-      { skipAuth: true }
+      { skipAuth: true },
     );
 
     window.location.assign(response.authorizationUrl);
@@ -112,7 +108,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     state: string;
   }): Promise<void> => {
     const codeVerifier = sessionStorage.getItem(
-      `oauth:pkce:${params.provider}`
+      `oauth:pkce:${params.provider}`,
     );
 
     if (!codeVerifier) {
@@ -130,7 +126,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         code: params.code,
         codeVerifier,
       },
-      { skipAuth: true }
+      { skipAuth: true },
     );
 
     tokenStorage.setTokens(response.accessToken, response.refreshToken);

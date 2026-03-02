@@ -1,5 +1,5 @@
-import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
 import { ListOAuthProvidersUseCase } from "../application/usecases/auth/ListOAuthProvidersUseCase";
+import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
 import { OAuthCallbackUseCase } from "../application/usecases/auth/OAuthCallbackUseCase";
 import { RefreshTokenUseCase } from "../application/usecases/auth/RefreshTokenUseCase";
 import { StartOAuthAuthorizationUseCase } from "../application/usecases/auth/StartOAuthAuthorizationUseCase";
@@ -95,13 +95,15 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   const passwordService = new PasswordService();
   const jwtService = new JwtService(environment.jwt);
   const tokenHashService = new TokenHashService(environment.jwt.secret);
-  const oauthStateStore = new OAuthStateStore(environment.oauth.stateTtlSeconds);
+  const oauthStateStore = new OAuthStateStore(
+    environment.oauth.stateTtlSeconds,
+  );
   const oauthProviders = new Map<string, OAuthProviderClient>();
 
   if (environment.oauth.providers.google) {
     oauthProviders.set(
       "google",
-      new GoogleOAuthProviderClient(environment.oauth.providers.google)
+      new GoogleOAuthProviderClient(environment.oauth.providers.google),
     );
   }
 
@@ -111,7 +113,7 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   const getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
   const createUserUseCase = new CreateUserUseCase(
     userRepository,
-    passwordService
+    passwordService,
   );
   const updateUserUseCase = new UpdateUserUseCase(userRepository);
   const deleteUserUseCase = new DeleteUserUseCase(userRepository);
@@ -120,30 +122,30 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
     userRepository,
     passwordService,
     jwtService,
-    tokenHashService
+    tokenHashService,
   );
   const refreshTokenUseCase = new RefreshTokenUseCase(
     userRepository,
     jwtService,
-    tokenHashService
+    tokenHashService,
   );
   const validateTokenUseCase = new ValidateTokenUseCase(
     userRepository,
-    jwtService
+    jwtService,
   );
   const listOAuthProvidersUseCase = new ListOAuthProvidersUseCase(
-    oauthProviderRegistry
+    oauthProviderRegistry,
   );
   const startOAuthAuthorizationUseCase = new StartOAuthAuthorizationUseCase(
     oauthProviderRegistry,
-    oauthStateStore
+    oauthStateStore,
   );
   const oauthCallbackUseCase = new OAuthCallbackUseCase(
     userRepository,
     oauthProviderRegistry,
     oauthStateStore,
     jwtService,
-    tokenHashService
+    tokenHashService,
   );
 
   const authController = new AuthController({
@@ -176,7 +178,7 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
     googleSheetsClient,
     {
       range: environment.googleSheets.ranges.inscriptions,
-    }
+    },
   );
 
   // Initialize inscription sheet (create if needed, validate/update headers)
@@ -188,19 +190,19 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   }
 
   const getInscriptionsUseCase = new GetInscriptionsUseCase(
-    inscriptionRepository
+    inscriptionRepository,
   );
   const getInscriptionByIdUseCase = new GetInscriptionByIdUseCase(
-    inscriptionRepository
+    inscriptionRepository,
   );
   const createInscriptionUseCase = new CreateInscriptionUseCase(
-    inscriptionRepository
+    inscriptionRepository,
   );
   const updateInscriptionUseCase = new UpdateInscriptionUseCase(
-    inscriptionRepository
+    inscriptionRepository,
   );
   const deleteInscriptionUseCase = new DeleteInscriptionUseCase(
-    inscriptionRepository
+    inscriptionRepository,
   );
 
   const inscriptionController = new InscriptionController({
@@ -215,7 +217,7 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
     googleSheetsClient,
     {
       range: environment.googleSheets.ranges.presences,
-    }
+    },
   );
 
   // Initialize presence sheet (create if needed, validate/update headers)
@@ -258,7 +260,7 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
         const disabledMailClient: IMailClient = {
           async send() {
             throw new Error(
-              "Email service is not configured. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables."
+              "Email service is not configured. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.",
             );
           },
         };

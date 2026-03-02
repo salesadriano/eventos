@@ -7,7 +7,8 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: "Eventos API",
       version: "1.0.0",
-      description: "RESTful API for Eventos application with Google Sheets integration",
+      description:
+        "RESTful API for Eventos application with Google Sheets integration",
       contact: {
         name: "API Support",
       },
@@ -230,7 +231,8 @@ const options: swaggerJsdoc.Options = {
             appHeaderImageUrl: {
               type: "string",
               description: "Optional application header image URL",
-              example: "https://cdn.example.com/events/event-123/app-header.png",
+              example:
+                "https://cdn.example.com/events/event-123/app-header.png",
             },
             certificateHeaderImageUrl: {
               type: "string",
@@ -340,7 +342,8 @@ const options: swaggerJsdoc.Options = {
             appHeaderImageUrl: {
               type: "string",
               description: "Optional application header image URL",
-              example: "https://cdn.example.com/events/event-123/app-header.png",
+              example:
+                "https://cdn.example.com/events/event-123/app-header.png",
             },
             certificateHeaderImageUrl: {
               type: "string",
@@ -395,7 +398,8 @@ const options: swaggerJsdoc.Options = {
             appHeaderImageUrl: {
               type: "string",
               description: "Optional application header image URL",
-              example: "https://cdn.example.com/events/event-123/app-header.png",
+              example:
+                "https://cdn.example.com/events/event-123/app-header.png",
             },
             certificateHeaderImageUrl: {
               type: "string",

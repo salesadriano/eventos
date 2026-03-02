@@ -1,20 +1,20 @@
 import type { NextFunction, Request, Response } from "express";
-import type { OAuthProvider } from "../../../domain/entities/UserEntity";
-import { ValidationError } from "../../../domain/errors/ApplicationError";
-import type { LoginUseCase } from "../../../application/usecases/auth/LoginUseCase";
+import type {
+  LoginRequest,
+  OAuthCallbackRequest,
+  RefreshTokenRequest,
+  RegisterRequest,
+  StartOAuthRequest,
+} from "../../../application/dtos/AuthDtos";
 import type { ListOAuthProvidersUseCase } from "../../../application/usecases/auth/ListOAuthProvidersUseCase";
+import type { LoginUseCase } from "../../../application/usecases/auth/LoginUseCase";
 import type { OAuthCallbackUseCase } from "../../../application/usecases/auth/OAuthCallbackUseCase";
 import type { RefreshTokenUseCase } from "../../../application/usecases/auth/RefreshTokenUseCase";
 import type { StartOAuthAuthorizationUseCase } from "../../../application/usecases/auth/StartOAuthAuthorizationUseCase";
 import type { ValidateTokenUseCase } from "../../../application/usecases/auth/ValidateTokenUseCase";
 import type { CreateUserUseCase } from "../../../application/usecases/users/CreateUserUseCase";
-import type {
-  OAuthCallbackRequest,
-  LoginRequest,
-  RefreshTokenRequest,
-  RegisterRequest,
-  StartOAuthRequest,
-} from "../../../application/dtos/AuthDtos";
+import type { OAuthProvider } from "../../../domain/entities/UserEntity";
+import { ValidationError } from "../../../domain/errors/ApplicationError";
 
 interface AuthControllerDependencies {
   createUserUseCase: CreateUserUseCase;
@@ -32,7 +32,7 @@ export class AuthController {
   register = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const registerRequest = req.body as RegisterRequest;
@@ -58,7 +58,7 @@ export class AuthController {
   login = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const loginRequest = req.body as LoginRequest;
@@ -73,7 +73,7 @@ export class AuthController {
   refreshToken = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const bodyRequest = req.body as RefreshTokenRequest;
@@ -85,7 +85,8 @@ export class AuthController {
       }
 
       const refreshRequest: RefreshTokenRequest = { refreshToken };
-      const result = await this.deps.refreshTokenUseCase.execute(refreshRequest);
+      const result =
+        await this.deps.refreshTokenUseCase.execute(refreshRequest);
       this.setRefreshTokenCookie(res, result.refreshToken);
       res.json(result);
     } catch (error) {
@@ -96,7 +97,7 @@ export class AuthController {
   validateToken = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "") || "";
@@ -110,7 +111,7 @@ export class AuthController {
   listOAuthProviders = async (
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const result = this.deps.listOAuthProvidersUseCase.execute();
@@ -123,7 +124,7 @@ export class AuthController {
   startOAuthAuthorization = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as StartOAuthRequest;
@@ -142,7 +143,7 @@ export class AuthController {
   oauthCallback = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as OAuthCallbackRequest;
@@ -173,9 +174,11 @@ export class AuthController {
       return undefined;
     }
 
-    const cookies = cookieHeader.split(";").map((rawCookie) => rawCookie.trim());
+    const cookies = cookieHeader
+      .split(";")
+      .map((rawCookie) => rawCookie.trim());
     const tokenCookie = cookies.find((cookie) =>
-      cookie.startsWith(`${cookieName}=`)
+      cookie.startsWith(`${cookieName}=`),
     );
 
     if (!tokenCookie) {

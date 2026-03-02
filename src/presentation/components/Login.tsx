@@ -37,8 +37,8 @@ export const Login: FC<LoginProps> = ({
         err instanceof Error
           ? err.message
           : mode === "login"
-          ? "Não foi possível acessar. Verifique suas credenciais."
-          : "Não foi possível concluir o autocadastro."
+            ? "Não foi possível acessar. Verifique suas credenciais."
+            : "Não foi possível concluir o autocadastro.",
       );
     } finally {
       setIsLoading(false);
@@ -97,8 +97,8 @@ export const Login: FC<LoginProps> = ({
               ? "Entrando..."
               : "Cadastrando..."
             : mode === "login"
-            ? "Entrar"
-            : "Criar conta"}
+              ? "Entrar"
+              : "Criar conta"}
         </button>
         <button
           className="btn ghost full"
