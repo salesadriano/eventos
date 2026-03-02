@@ -279,3 +279,54 @@ Permite aos administradores e palestrantes gerenciar seus perfis (RF08).
 5. Rodapé: Simplificado.
 
 ![Layout cadastro de Palestrante](images/palestrantes.png)
+
+### 9.8 Página de Configuração de Repositório de Arquivos
+
+Esta página é crucial para definir onde os arquivos de apresentação serão armazenados (RF12, CA10).
+
+1. Cabeçalho Administrativo.
+2. Título: "Configuração de Repositório de Arquivos"
+3. Opções de Repositório: Radio buttons ou dropdown para selecionar:
+   3.1 Local
+   3.1 Google Drive
+   3.1 AWS S3
+4. Campos de Credenciais (condicionais): Dependendo do repositório escolhido, exibir campos para:
+   4.1 Google Drive: Chave de API, Client ID, Secret (ou similar).
+   4.2 AWS S3: Access Key ID, Secret Access Key, Bucket Name, Região.
+5. Botão "Testar Conexão": (CA10) Para validar as credenciais e a disponibilidade.
+6. Botão "Salvar Configuração", "Cancelar".
+7. Rodapé: Simplificado.
+
+![Layout Configuração de Repositório de Arquivos](images/uploadarquivos.png)
+
+## 10. Design System da Plataforma Eventos
+
+1. Princípios de Design
+   Estes princípios guiarão todas as decisões de design e desenvolvimento, refletindo a visão da plataforma:
+
+- Clareza: A informação é fácil de entender, as ações são intuitivas.
+- Eficiência: O usuário alcança seus objetivos rapidamente, com o mínimo de esforço.
+- Consistência: Experiência uniforme em todas as páginas e interações.
+- Acessibilidade: Design inclusivo para todos os usuários.
+- Responsividade: Adaptável a qualquer dispositivo e tamanho de tela.
+- Foco no Evento: Os eventos e suas informações são o centro da atenção.
+- Confiança: Transmite segurança na gestão de dados e autenticação.
+
+2. Identidade Visual
+
+- Marca: "EventFlow" (ou nome da plataforma).
+- Uso: Consistente no cabeçalho e páginas de acesso.
+
+Baseado nas variáveis globais --brand-primary, --brand-secondary, --surface, --muted, --border, --danger e nas telas propostas:
+
+- Primária (--brand-primary): Um azul vibrante e convidativo (ex: #1877F2 ou similar). Usado para CTAs principais, elementos interativos e branding.
+- Secundária (--brand-secondary): Um tom de azul mais claro ou um verde/ciano complementar (ex: #4CAF50 ou #00BCD4). Usado para CTAs secundárias, destaques e elementos de sucesso.
+- Superfície (--surface): Branco ou um cinza muito claro (ex: #FFFFFF, #F9FAFB). Para backgrounds de cards, modais e áreas de conteúdo.
+- Texto Principal: Preto ou cinza escuro (ex: #212121, #424242).
+- Muted (--muted): Cinza médio para textos secundários, rótulos e placeholders (ex: #757575, #BDBDBD).
+- Borda (--border): Cinza claro para linhas divisórias e bordas de campos (ex: #E0E0E0).
+  Perigo (--danger): Vermelho para ações destrutivas, mensagens de erro e alertas (ex: #F44336).
+- Sucesso: Verde para mensagens de sucesso e ícones de validação (ex: #4CAF50).
+- Fundo Institucional: Gradiente radial suave (ex: um tom pastel de azul claro para o centro e branco nas bordas).
+
+![System Design](images/DesignSystem.png)
