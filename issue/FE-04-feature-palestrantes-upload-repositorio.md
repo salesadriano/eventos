@@ -36,7 +36,39 @@ Escopo de UCs:
 - UC-026
 - UC-033, UC-034, UC-035, UC-036, UC-037, UC-038, UC-039, UC-040, UC-041, UC-042
 
+## Guia Visual Obrigatório
+
+Esta issue **DEVE** ser implementada seguindo os mockups visuais definidos em:
+
+- **Arquivo de referência 1**: [docs/images/palestrantes.png](docs/DEFINICAO_LAYOUTS_PAGINAS.md#97-página-de-cadastroedição-de-palestrante)
+- **Arquivo de referência 2**: [docs/images/uploadarquivos.png](docs/DEFINICAO_LAYOUTS_PAGINAS.md#98-página-de-configuração-de-repositório-de-arquivos)
+- **Seção do documento**: `docs/DEFINICAO_LAYOUTS_PAGINAS.md` — Seções 9.7 (Palestrantes) e 9.8 (Repositório)
+- **Operações no Dashboard**: Seção 9.3, Bloco 6 (Painel de Palestrantes)
+
+Qualquer implementação que desviar da estrutura visual definida nos mockups **DEVE** ser:
+
+1. Explicitamente documentada como exceção
+2. Validada e aprovada pelo **UX Expert** antes de aceitar a issue
+3. Incluir justificativa técnica ou de negócio para o desvio
+
 ## Critérios de Aceitação
+
+### Obrigatoriedade de Conformidade Visual
+
+> **⚠️ VINCULANTE:** Toda a implementação **DEVE** seguir rigorosamente os mockups visuais `docs/images/palestrantes.png` e `docs/images/uploadarquivos.png` conforme especificado nas Seções 9.7 e 9.8 de `docs/DEFINICAO_LAYOUTS_PAGINAS.md`.
+
+### Critérios Funcionais
+
+- [ ] **[VISUAL]** Formulário de palestrante segue exatamente o layout do mockup `docs/images/palestrantes.png` (Seção 9.7).
+- [ ] **[VISUAL]** Página de configuração de repositório segue exatamente o layout do mockup `docs/images/uploadarquivos.png` (Seção 9.8).
+- [ ] **[VISUAL]** Opções de repositório (Local, Google Drive, AWS S3) apresentadas conforme especificado.
+- [ ] Fluxo de cadastro/edição de palestrante completo na UI.
+- [ ] Upload de apresentação com validação de tipo/tamanho e feedback visual.
+- [ ] Seleção de repositório ativo e cadastro/edição de credenciais na interface operante.
+- [ ] Teste de conexão do repositório com retorno visual claro (sucesso/erro).
+- [ ] Controle de visibilidade/permissão por perfil implementado.
+- [ ] Nenhum segredo exposto em tela ou logs.
+- [ ] **[UX GATE]** Fluxos de cadastro de palestrantes, upload e configuração de repositório validados e aprovados pelo UX Expert.
 
 - [ ] Fluxo de cadastro/edição de palestrante completo na UI.
 - [ ] Upload de apresentação com validação de tipo/tamanho e feedback.
@@ -53,7 +85,39 @@ Escopo de UCs:
 
 ## Mockups / Diagramas
 
-- Referência de fluxos: docs/case/UC-012..UC-042 relacionados.
+### Referências Visuais de Layout
+
+- **Layout de Cadastro/Edição de Palestrante**: `docs/DEFINICAO_LAYOUTS_PAGINAS.md` (Seção 9.7)
+- **Layout de Configuração de Repositório**: Seção 9.8
+- **Layout do Dashboard (painel palestrantes)**: Seção 9.3 (bloco 6)
+- **Mockups de referência**:
+  - `docs/images/palestrantes.png`
+  - `docs/images/uploadarquivos.png`
+- **Fluxos de negócio**: docs/case/UC-012 a UC-042
+
+### Especificação de Layout (Seções 9.7 e 9.8)
+
+**Página de Cadastro/Edição de Palestrante (9.7):**
+
+1. Cabeçalho Administrativo
+2. Título: "Cadastrar Novo Palestrante" ou "Editar Palestrante: [Nome]"
+3. Formulário:
+   - Nome Completo, Foto de Perfil, Biográfico/Mini Currículo
+   - Redes Sociais (LinkedIn, Twitter, Instagram, etc.)
+   - Contato (E-mail)
+   - Área para upload de arquivos de apresentação (RF10)
+4. Botões: "Salvar Palestrante", "Cancelar"
+5. Rodapé simplificado
+
+**Página de Configuração de Repositório (9.8):**
+
+1. Cabeçalho Administrativo
+2. Título: "Configuração de Repositório de Arquivos"
+3. Opções de Repositório: Radio buttons (Local, Google Drive, AWS S3)
+4. Campos de Credenciais (condicionais por tipo selecionado)
+5. Botão "Testar Conexão" (CA10) - validação
+6. Botões: "Salvar Configuração", "Cancelar"
+7. Rodapé simplificado
 
 ## Estimativa de Esforço
 
@@ -81,6 +145,16 @@ Escopo de UCs:
 - docs/case/UC-040-salvar-repositorio-ativo.md
 - docs/case/UC-041-cadastrar-credenciais-repositorio.md
 - docs/case/UC-042-atualizar-credenciais-repositorio.md
+
+## Dependências e Bloqueios
+
+### Esta Issue Depende De
+
+- **FE-05**: Design System (componentes de formulário, upload de arquivos, feedback de validação, configuração administrativa e estados de loading são necessários para gestão de palestrantes e repositório)
+
+### Esta Issue Bloqueia
+
+- Gestão completa de conteúdo dos eventos
 
 ## Checklist do Solicitante
 
