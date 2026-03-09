@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { UserDtoMapper } from "../../../application/dtos/UserDtos";
 import { parsePaginationParams } from "../../../application/dtos/PaginationDtos";
+import { UserDtoMapper } from "../../../application/dtos/UserDtos";
 import type {
   CreateUserPayload,
   CreateUserUseCase,
@@ -27,12 +27,12 @@ export class UserController {
   list = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const pagination = parsePaginationParams(
-        req.query.page as string,
-        req.query.limit as string
+        String(req.query.page),
+        String(req.query.limit),
       );
       const result = await this.deps.getUsersUseCase.execute(pagination);
       res.json({
@@ -47,7 +47,7 @@ export class UserController {
   listAll = async (
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const users = await this.deps.getUsersUseCase.executeAll();
@@ -60,10 +60,12 @@ export class UserController {
   getById = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      const user = await this.deps.getUserByIdUseCase.execute(req.params.id);
+      const user = await this.deps.getUserByIdUseCase.execute(
+        String(req.params.id),
+      );
       res.json(UserDtoMapper.toResponse(user));
     } catch (error) {
       next(error);
@@ -73,7 +75,7 @@ export class UserController {
   create = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as CreateUserPayload;
@@ -87,13 +89,13 @@ export class UserController {
   update = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as UpdateUserPayload;
       const user = await this.deps.updateUserUseCase.execute(
-        req.params.id,
-        payload
+        String(req.params.id),
+        payload,
       );
       res.json(UserDtoMapper.toResponse(user));
     } catch (error) {
@@ -104,10 +106,10 @@ export class UserController {
   remove = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      await this.deps.deleteUserUseCase.execute(req.params.id);
+      await this.deps.deleteUserUseCase.execute(String(req.params.id));
       res.status(204).send();
     } catch (error) {
       next(error);

@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { FederatedIdentityEntity } from "../../../domain/entities/FederatedIdentityEntity";
 import {
   UserEntity,
   type OAuthProvider,
@@ -7,6 +8,7 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "../../../domain/errors/ApplicationError";
+import type { FederatedIdentityRepository } from "../../../domain/repositories/FederatedIdentityRepository";
 import type { UserRepository } from "../../../domain/repositories/UserRepository";
 import { JwtService } from "../../../infrastructure/auth/JwtService";
 import { OAuthStateStore } from "../../../infrastructure/auth/OAuthStateStore";
@@ -44,6 +46,7 @@ const createDefaultName = (email: string): string => {
 export class OAuthCallbackUseCase {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly federatedIdentityRepository: FederatedIdentityRepository,
     private readonly providerRegistry: OAuthProviderRegistry,
     private readonly oauthStateStore: OAuthStateStore,
     private readonly jwtService: JwtService,
@@ -107,6 +110,26 @@ export class OAuthCallbackUseCase {
           }),
         );
       }
+    }
+
+    // Persist federated identity link for audit and future lookups
+    const federated =
+      await this.federatedIdentityRepository.findByProviderAndSubject(
+        request.provider,
+        profile.subject,
+      );
+
+    if (!federated) {
+      await this.federatedIdentityRepository.create(
+        FederatedIdentityEntity.create({
+          userId: user.id,
+          provider: request.provider,
+          subject: profile.subject,
+          email: profile.email,
+          name: profile.name,
+          emailVerified: !!profile.emailVerified,
+        }),
+      );
     }
 
     const tokenPair = this.jwtService.generateTokenPair({

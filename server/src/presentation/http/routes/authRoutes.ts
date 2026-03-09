@@ -1,5 +1,6 @@
 import { Router } from "express";
 import type { AuthController } from "../controllers/AuthController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 export const createAuthRoutes = (authController: AuthController): Router => {
   const router = Router();
@@ -177,6 +178,58 @@ export const createAuthRoutes = (authController: AuthController): Router => {
    *               $ref: '#/components/schemas/ValidateTokenResponse'
    */
   router.get("/validate", authController.validateToken);
+
+  /**
+   * @swagger
+   * /auth/logout:
+   *   post:
+   *     summary: Logout user and revoke session
+   *     tags: [Auth]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Logout successful
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *       401:
+   *         description: User must be authenticated
+   */
+  router.post("/logout", authMiddleware, authController.logout);
+
+  /**
+   * @swagger
+   * /auth/revoke:
+   *   post:
+   *     summary: Revoke current refresh token
+   *     tags: [Auth]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: false
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/RefreshTokenRequest'
+   *     responses:
+   *       200:
+   *         description: Token revoked successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *       401:
+   *         description: Invalid or missing refresh token
+   */
+  router.post("/revoke", authMiddleware, authController.revokeRefreshToken);
 
   return router;
 };

@@ -5,13 +5,14 @@ import { UnauthorizedError } from "../../../src/domain/errors/ApplicationError";
 import { JwtService } from "../../../src/infrastructure/auth/JwtService";
 import { OAuthStateStore } from "../../../src/infrastructure/auth/OAuthStateStore";
 import { TokenHashService } from "../../../src/infrastructure/auth/TokenHashService";
-import { OAuthProviderRegistry } from "../../../src/infrastructure/auth/providers/OAuthProviderRegistry";
 import type {
   OAuthAuthorizationParams,
   OAuthCodeExchangeParams,
   OAuthProviderClient,
   OAuthProviderProfile,
 } from "../../../src/infrastructure/auth/providers/OAuthProviderClient";
+import { OAuthProviderRegistry } from "../../../src/infrastructure/auth/providers/OAuthProviderRegistry";
+import { FederatedIdentityRepositoryStub } from "../../stubs/FederatedIdentityRepositoryStub";
 import { UserRepositoryStub } from "../../stubs/UserRepositoryStub";
 import { expectAsyncError } from "../../utils/expectError";
 
@@ -56,20 +57,29 @@ const setup = () => {
   });
   const tokenHashService = new TokenHashService("test-secret");
 
+  // create stub for federated identity repository
+  const federatedRepoStub = new FederatedIdentityRepositoryStub();
+  federatedRepoStub.createMock.implement(async (id) => id);
+  federatedRepoStub.findByProviderAndSubjectMock.implement(async () => null);
+  federatedRepoStub.findByUserIdAndProviderMock.implement(async () => null);
+  federatedRepoStub.findAllByUserIdMock.implement(async () => []);
+  federatedRepoStub.deleteMock.implement(async () => {});
+
   const useCase = new OAuthCallbackUseCase(
     userRepository,
+    federatedRepoStub,
     providerRegistry,
     oauthStateStore,
     jwtService,
     tokenHashService
   );
 
-  return { useCase, userRepository, oauthStateStore };
+  return { useCase, userRepository, oauthStateStore, federatedRepoStub };
 };
 
 export const oauthCallbackUseCaseSpecs = {
   async createsSessionWhenCallbackIsValid(): Promise<void> {
-    const { useCase, userRepository, oauthStateStore } = setup();
+    const { useCase, userRepository, oauthStateStore, federatedRepoStub } = setup();
 
     const codeVerifier = "1234567890123456789012345678901234567890123";
     const codeChallenge = createHash("sha256")
@@ -93,6 +103,7 @@ export const oauthCallbackUseCaseSpecs = {
     expect(response.user.email).to.equal("oauth.user@example.com");
     expect(userRepository.createMock.callCount).to.equal(1);
     expect(userRepository.updateMock.callCount).to.equal(1);
+    expect(federatedRepoStub.createMock.callCount).to.equal(1);
   },
 
   async throwsWhenStateIsReplayed(): Promise<void> {
@@ -146,5 +157,41 @@ export const oauthCallbackUseCaseSpecs = {
         }),
       UnauthorizedError
     );
+  },
+
+  async doesNotCreateDuplicateFederatedRecord(): Promise<void> {
+    const { useCase, userRepository, oauthStateStore, federatedRepoStub } = setup();
+
+    // simulate that federated identity already exists
+    federatedRepoStub.findByProviderAndSubjectMock.implement(async () => ({
+      id: "federated-1",
+      userId: "user-1",
+      provider: "google",
+      subject: "oauth-subject-1",
+      email: "oauth.user@example.com",
+      name: "OAuth User",
+      emailVerified: true,
+      linkedAt: new Date(),
+    }));
+
+    const codeVerifier = "1234567890123456789012345678901234567890123";
+    const codeChallenge = createHash("sha256")
+      .update(codeVerifier)
+      .digest("base64url");
+    const context = oauthStateStore.create(
+      "google",
+      codeChallenge,
+      "http://localhost:5173/callback"
+    );
+
+    const response = await useCase.execute({
+      provider: "google",
+      state: context.state,
+      code: "oauth-code",
+      codeVerifier,
+    });
+
+    expect(response.user.email).to.equal("oauth.user@example.com");
+    expect(federatedRepoStub.createMock.callCount).to.equal(0);
   },
 };

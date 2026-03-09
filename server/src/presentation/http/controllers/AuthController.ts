@@ -8,8 +8,10 @@ import type {
 } from "../../../application/dtos/AuthDtos";
 import type { ListOAuthProvidersUseCase } from "../../../application/usecases/auth/ListOAuthProvidersUseCase";
 import type { LoginUseCase } from "../../../application/usecases/auth/LoginUseCase";
+import type { LogoutUseCase } from "../../../application/usecases/auth/LogoutUseCase";
 import type { OAuthCallbackUseCase } from "../../../application/usecases/auth/OAuthCallbackUseCase";
 import type { RefreshTokenUseCase } from "../../../application/usecases/auth/RefreshTokenUseCase";
+import type { RevokeRefreshTokenUseCase } from "../../../application/usecases/auth/RevokeRefreshTokenUseCase";
 import type { StartOAuthAuthorizationUseCase } from "../../../application/usecases/auth/StartOAuthAuthorizationUseCase";
 import type { ValidateTokenUseCase } from "../../../application/usecases/auth/ValidateTokenUseCase";
 import type { CreateUserUseCase } from "../../../application/usecases/users/CreateUserUseCase";
@@ -24,6 +26,8 @@ interface AuthControllerDependencies {
   listOAuthProvidersUseCase: ListOAuthProvidersUseCase;
   startOAuthAuthorizationUseCase: StartOAuthAuthorizationUseCase;
   oauthCallbackUseCase: OAuthCallbackUseCase;
+  logoutUseCase: LogoutUseCase;
+  revokeRefreshTokenUseCase: RevokeRefreshTokenUseCase;
 }
 
 export class AuthController {
@@ -128,7 +132,7 @@ export class AuthController {
   ): Promise<void> => {
     try {
       const payload = req.body as StartOAuthRequest;
-      const provider = req.params.provider;
+      const provider = String(req.params.provider);
       const result = this.deps.startOAuthAuthorizationUseCase.execute({
         provider,
         codeChallenge: payload.codeChallenge,
@@ -162,6 +166,64 @@ export class AuthController {
         accessToken: result.accessToken,
         user: result.user,
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  logout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        throw new ValidationError("User must be authenticated to logout");
+      }
+
+      await this.deps.logoutUseCase.execute(userId);
+
+      // Limpar cookie de refresh token
+      res.clearCookie("refreshToken", {
+        path: "/api/auth",
+      });
+
+      res.json({ message: "Logged out successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  revokeRefreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const userId = (req as any).user?.userId;
+
+      if (!userId) {
+        throw new ValidationError("User must be authenticated to revoke token");
+      }
+
+      const bodyRequest = req.body as RefreshTokenRequest;
+      const refreshToken =
+        bodyRequest.refreshToken || this.extractCookie(req, "refreshToken");
+
+      if (!refreshToken) {
+        throw new ValidationError("Refresh token is required");
+      }
+
+      await this.deps.revokeRefreshTokenUseCase.execute(userId, refreshToken);
+
+      // Limpar cookie de refresh token
+      res.clearCookie("refreshToken", {
+        path: "/api/auth",
+      });
+
+      res.json({ message: "Token revoked successfully" });
     } catch (error) {
       next(error);
     }

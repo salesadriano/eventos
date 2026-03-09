@@ -5,15 +5,9 @@ import type {
   CreateInscriptionPayload,
   CreateInscriptionUseCase,
 } from "../../../application/usecases/inscriptions/CreateInscriptionUseCase";
-import type {
-  DeleteInscriptionUseCase,
-} from "../../../application/usecases/inscriptions/DeleteInscriptionUseCase";
-import type {
-  GetInscriptionByIdUseCase,
-} from "../../../application/usecases/inscriptions/GetInscriptionByIdUseCase";
-import type {
-  GetInscriptionsUseCase,
-} from "../../../application/usecases/inscriptions/GetInscriptionsUseCase";
+import type { DeleteInscriptionUseCase } from "../../../application/usecases/inscriptions/DeleteInscriptionUseCase";
+import type { GetInscriptionByIdUseCase } from "../../../application/usecases/inscriptions/GetInscriptionByIdUseCase";
+import type { GetInscriptionsUseCase } from "../../../application/usecases/inscriptions/GetInscriptionsUseCase";
 import type {
   UpdateInscriptionPayload,
   UpdateInscriptionUseCase,
@@ -33,17 +27,17 @@ export class InscriptionController {
   list = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const pagination = parsePaginationParams(
-        req.query.page as string,
-        req.query.limit as string
+        String(req.query.page),
+        String(req.query.limit),
       );
       const result = await this.deps.getInscriptionsUseCase.execute(pagination);
       res.json({
         results: result.results.map((inscription) =>
-          InscriptionDtoMapper.toResponse(inscription)
+          InscriptionDtoMapper.toResponse(inscription),
         ),
         meta: result.meta,
       });
@@ -55,15 +49,14 @@ export class InscriptionController {
   listAll = async (
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      const inscriptions =
-        await this.deps.getInscriptionsUseCase.executeAll();
+      const inscriptions = await this.deps.getInscriptionsUseCase.executeAll();
       res.json(
         inscriptions.map((inscription) =>
-          InscriptionDtoMapper.toResponse(inscription)
-        )
+          InscriptionDtoMapper.toResponse(inscription),
+        ),
       );
     } catch (error) {
       next(error);
@@ -73,11 +66,11 @@ export class InscriptionController {
   getById = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const inscription = await this.deps.getInscriptionByIdUseCase.execute(
-        req.params.id
+        String(req.params.id),
       );
       res.json(InscriptionDtoMapper.toResponse(inscription));
     } catch (error) {
@@ -88,7 +81,7 @@ export class InscriptionController {
   create = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as CreateInscriptionPayload;
@@ -103,13 +96,13 @@ export class InscriptionController {
   update = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as UpdateInscriptionPayload;
       const inscription = await this.deps.updateInscriptionUseCase.execute(
-        req.params.id,
-        payload
+        String(req.params.id),
+        payload,
       );
       res.json(InscriptionDtoMapper.toResponse(inscription));
     } catch (error) {
@@ -120,14 +113,13 @@ export class InscriptionController {
   remove = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      await this.deps.deleteInscriptionUseCase.execute(req.params.id);
+      await this.deps.deleteInscriptionUseCase.execute(String(req.params.id));
       res.status(204).send();
     } catch (error) {
       next(error);
     }
   };
 }
-

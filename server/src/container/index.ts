@@ -1,7 +1,9 @@
 import { ListOAuthProvidersUseCase } from "../application/usecases/auth/ListOAuthProvidersUseCase";
 import { LoginUseCase } from "../application/usecases/auth/LoginUseCase";
+import { LogoutUseCase } from "../application/usecases/auth/LogoutUseCase";
 import { OAuthCallbackUseCase } from "../application/usecases/auth/OAuthCallbackUseCase";
 import { RefreshTokenUseCase } from "../application/usecases/auth/RefreshTokenUseCase";
+import { RevokeRefreshTokenUseCase } from "../application/usecases/auth/RevokeRefreshTokenUseCase";
 import { StartOAuthAuthorizationUseCase } from "../application/usecases/auth/StartOAuthAuthorizationUseCase";
 import { ValidateTokenUseCase } from "../application/usecases/auth/ValidateTokenUseCase";
 import { SendEmailUseCase } from "../application/usecases/email/SendEmailUseCase";
@@ -30,12 +32,15 @@ import { JwtService } from "../infrastructure/auth/JwtService";
 import { OAuthStateStore } from "../infrastructure/auth/OAuthStateStore";
 import { PasswordService } from "../infrastructure/auth/PasswordService";
 import { TokenHashService } from "../infrastructure/auth/TokenHashService";
+import { GitHubOAuthProviderClient } from "../infrastructure/auth/providers/GitHubOAuthProviderClient";
 import { GoogleOAuthProviderClient } from "../infrastructure/auth/providers/GoogleOAuthProviderClient";
+import { MicrosoftOAuthProviderClient } from "../infrastructure/auth/providers/MicrosoftOAuthProviderClient";
 import type { OAuthProviderClient } from "../infrastructure/auth/providers/OAuthProviderClient";
 import { OAuthProviderRegistry } from "../infrastructure/auth/providers/OAuthProviderRegistry";
 import { GoogleSheetsClient } from "../infrastructure/google/GoogleSheetsClient";
 import { SmtpMailClient } from "../infrastructure/mail/SmtpMailClient";
 import { GoogleSheetsEventRepository } from "../infrastructure/repositories/GoogleSheetsEventRepository";
+import { GoogleSheetsFederatedIdentityRepository } from "../infrastructure/repositories/GoogleSheetsFederatedIdentityRepository";
 import { GoogleSheetsInscriptionRepository } from "../infrastructure/repositories/GoogleSheetsInscriptionRepository";
 import { GoogleSheetsPresenceRepository } from "../infrastructure/repositories/GoogleSheetsPresenceRepository";
 import { GoogleSheetsUserRepository } from "../infrastructure/repositories/GoogleSheetsUserRepository";
@@ -100,10 +105,37 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   );
   const oauthProviders = new Map<string, OAuthProviderClient>();
 
+  // Federated identity repository (for audit and login tracing)
+  const federatedIdentityRepository =
+    new GoogleSheetsFederatedIdentityRepository(googleSheetsClient, {
+      range: environment.googleSheets.ranges.federatedIdentities,
+    });
+
+  try {
+    await federatedIdentityRepository.initialize();
+  } catch (error) {
+    console.error("Failed to initialize federated identities sheet:", error);
+    throw error;
+  }
+
   if (environment.oauth.providers.google) {
     oauthProviders.set(
       "google",
       new GoogleOAuthProviderClient(environment.oauth.providers.google),
+    );
+  }
+
+  if (environment.oauth.providers.microsoft) {
+    oauthProviders.set(
+      "microsoft",
+      new MicrosoftOAuthProviderClient(environment.oauth.providers.microsoft),
+    );
+  }
+
+  if (environment.oauth.providers.github) {
+    oauthProviders.set(
+      "github",
+      new GitHubOAuthProviderClient(environment.oauth.providers.github),
     );
   }
 
@@ -142,8 +174,15 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
   );
   const oauthCallbackUseCase = new OAuthCallbackUseCase(
     userRepository,
+    federatedIdentityRepository,
     oauthProviderRegistry,
     oauthStateStore,
+    jwtService,
+    tokenHashService,
+  );
+  const logoutUseCase = new LogoutUseCase(userRepository);
+  const revokeRefreshTokenUseCase = new RevokeRefreshTokenUseCase(
+    userRepository,
     jwtService,
     tokenHashService,
   );
@@ -156,6 +195,8 @@ export const buildContainer = async (): Promise<ApplicationContainer> => {
     listOAuthProvidersUseCase,
     startOAuthAuthorizationUseCase,
     oauthCallbackUseCase,
+    logoutUseCase,
+    revokeRefreshTokenUseCase,
   });
 
   const eventController = new EventController({

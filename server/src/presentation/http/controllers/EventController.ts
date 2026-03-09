@@ -27,17 +27,17 @@ export class EventController {
   list = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const pagination = parsePaginationParams(
-        req.query.page as string,
-        req.query.limit as string
+        String(req.query.page),
+        String(req.query.limit),
       );
       const result = await this.deps.getEventsUseCase.execute(pagination);
       res.json({
         results: result.results.map((event) =>
-          EventDtoMapper.toResponse(event)
+          EventDtoMapper.toResponse(event),
         ),
         meta: result.meta,
       });
@@ -49,7 +49,7 @@ export class EventController {
   listAll = async (
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const events = await this.deps.getEventsUseCase.executeAll();
@@ -62,10 +62,12 @@ export class EventController {
   getById = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      const event = await this.deps.getEventByIdUseCase.execute(req.params.id);
+      const event = await this.deps.getEventByIdUseCase.execute(
+        String(req.params.id),
+      );
       res.json(EventDtoMapper.toResponse(event));
     } catch (error) {
       next(error);
@@ -75,7 +77,7 @@ export class EventController {
   create = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as CreateEventPayload;
@@ -89,13 +91,13 @@ export class EventController {
   update = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const payload = req.body as UpdateEventPayload;
       const event = await this.deps.updateEventUseCase.execute(
-        req.params.id,
-        payload
+        String(req.params.id),
+        payload,
       );
       res.json(EventDtoMapper.toResponse(event));
     } catch (error) {
@@ -106,10 +108,10 @@ export class EventController {
   remove = async (
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> => {
     try {
-      await this.deps.deleteEventUseCase.execute(req.params.id);
+      await this.deps.deleteEventUseCase.execute(String(req.params.id));
       res.status(204).send();
     } catch (error) {
       next(error);

@@ -59,12 +59,26 @@ const defaultRanges = {
   inscriptions:
     process.env.GOOGLE_SHEETS_INSCRIPTIONS_RANGE ?? "inscriptions!A:G",
   presences: process.env.GOOGLE_SHEETS_PRESENCES_RANGE ?? "presences!A:F",
+  federatedIdentities:
+    process.env.GOOGLE_SHEETS_FEDERATED_IDENTITIES_RANGE ?? "federated_identities!A:H",
 };
 
 const oauthGoogleConfigured = Boolean(
   process.env.OAUTH_GOOGLE_CLIENT_ID &&
     process.env.OAUTH_GOOGLE_CLIENT_SECRET &&
     process.env.OAUTH_GOOGLE_REDIRECT_URI
+);
+
+const oauthMicrosoftConfigured = Boolean(
+  process.env.OAUTH_MICROSOFT_CLIENT_ID &&
+    process.env.OAUTH_MICROSOFT_CLIENT_SECRET &&
+    process.env.OAUTH_MICROSOFT_REDIRECT_URI
+);
+
+const oauthGitHubConfigured = Boolean(
+  process.env.OAUTH_GITHUB_CLIENT_ID &&
+    process.env.OAUTH_GITHUB_CLIENT_SECRET &&
+    process.env.OAUTH_GITHUB_REDIRECT_URI
 );
 
 export const environment = {
@@ -120,6 +134,49 @@ export const environment = {
               "openid",
               "profile",
               "email",
+            ]),
+          }
+        : undefined,
+      microsoft: oauthMicrosoftConfigured
+        ? {
+            clientId: process.env.OAUTH_MICROSOFT_CLIENT_ID!,
+            clientSecret: process.env.OAUTH_MICROSOFT_CLIENT_SECRET!,
+            redirectUri: process.env.OAUTH_MICROSOFT_REDIRECT_URI!,
+            authorizationUrl:
+              process.env.OAUTH_MICROSOFT_AUTH_URL ??
+              "https://login.microsoftonline.com",
+            tokenUrl:
+              process.env.OAUTH_MICROSOFT_TOKEN_URL ??
+              "https://login.microsoftonline.com",
+            userInfoUrl:
+              process.env.OAUTH_MICROSOFT_USERINFO_URL ??
+              "https://graph.microsoft.com/v1.0/me",
+            tenant: process.env.OAUTH_MICROSOFT_TENANT ?? "common",
+            scopes: parseScopes(process.env.OAUTH_MICROSOFT_SCOPES, [
+              "openid",
+              "profile",
+              "email",
+              "offline_access",
+            ]),
+          }
+        : undefined,
+      github: oauthGitHubConfigured
+        ? {
+            clientId: process.env.OAUTH_GITHUB_CLIENT_ID!,
+            clientSecret: process.env.OAUTH_GITHUB_CLIENT_SECRET!,
+            redirectUri: process.env.OAUTH_GITHUB_REDIRECT_URI!,
+            authorizationUrl:
+              process.env.OAUTH_GITHUB_AUTH_URL ??
+              "https://github.com/login/oauth/authorize",
+            tokenUrl:
+              process.env.OAUTH_GITHUB_TOKEN_URL ??
+              "https://github.com/login/oauth/access_token",
+            userInfoUrl:
+              process.env.OAUTH_GITHUB_USERINFO_URL ??
+              "https://api.github.com/user",
+            scopes: parseScopes(process.env.OAUTH_GITHUB_SCOPES, [
+              "user",
+              "user:email",
             ]),
           }
         : undefined,
