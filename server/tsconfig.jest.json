@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["node", "jest"],
+    "module": "CommonJS"
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "tests-cypress/**/*.ts", "jest.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}
