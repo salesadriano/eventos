@@ -256,7 +256,7 @@ Qualquer implementação que desviar da especificação visual do Design System 
 
 ### CA12 - Documentação
 
-- [ ] Storybook (ou equivalente) configurado
+- [x] Storybook (ou equivalente) configurado
 - [ ] Todos os componentes documentados com exemplos
 - [ ] Variações e estados demonstrados
 - [ ] Código de exemplo para cada componente
