@@ -105,7 +105,12 @@ Para detalhes:
 - `npm run dev` — backend com hot reload (`tsx watch`)
 - `npm run build` — compila TypeScript
 - `npm run start` — build + execução do backend
-- `npm test` — testes de use cases via Cypress
+- `npm test` — suíte de testes do backend com Jest
+- `npm run test:unit` — testes unitários com Jest
+- `npm run test:integration` — testes de integração com Jest + Supertest
+- `npm run test:coverage` — cobertura de testes do backend
+
+> Referência de estratégia e migração: `docs/plano-testes-backend-jest.md`.
 
 ## API e rotas
 
@@ -126,7 +131,8 @@ Fonte de verdade para rotas: `server/src/presentation/http/routes/**`.
 - `server/src/` — backend
 - `docs/` — documentação funcional/técnica
 - `cypress/` — E2E do frontend
-- `server/tests-cypress/` — testes de use cases do backend
+- `server/tests/` — suíte de testes do backend (Jest)
+- `server/tests-cypress/` — suíte legada do backend (em migração)
 
 ## Observações importantes
 
