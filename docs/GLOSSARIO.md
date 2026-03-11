@@ -33,10 +33,11 @@ Documento centralizado com todas as abreviações e siglas utilizadas no projeto
 
 ## Abreviações de Arquitetura
 
-| Sigla  | Significado          | Contexto                          | Localização                                        |
-| ------ | -------------------- | --------------------------------- | -------------------------------------------------- |
-| **DI** | Dependency Injection | Padrão de injeção de dependências | `server/src/container/index.ts` (`buildContainer`) |
-| **UC** | Use Case             | Casos de uso do sistema           | `docs/case/UC-*.md`                                |
+| Sigla   | Significado                  | Contexto                           | Localização                                        |
+| ------- | ---------------------------- | ---------------------------------- | -------------------------------------------------- |
+| **DI**  | Dependency Injection         | Padrão de injeção de dependências  | `server/src/container/index.ts` (`buildContainer`) |
+| **ADR** | Architecture Decision Record | Registro de decisões arquiteturais | `review/*.md`                                      |
+| **UC**  | Use Case                     | Casos de uso do sistema            | `docs/case/UC-*.md`                                |
 
 ## Abreviações de Padrões de Desenvolvimento
 
