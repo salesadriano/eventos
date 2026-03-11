@@ -1,0 +1,81 @@
+.button {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.button:focus-visible {
+  outline: 3px solid rgba(15, 139, 216, 0.35);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.default {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+.full {
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+.primary {
+  color: #fff;
+  background: linear-gradient(
+    120deg,
+    var(--brand-primary),
+    var(--brand-secondary)
+  );
+  box-shadow: 0 8px 18px rgba(15, 139, 216, 0.25);
+}
+
+.secondary {
+  color: var(--brand-dark);
+  background: rgba(15, 139, 216, 0.1);
+  border-color: rgba(15, 139, 216, 0.3);
+}
+
+.ghost {
+  color: var(--brand-dark);
+  background: transparent;
+  border-color: var(--border);
+}
+
+.danger {
+  color: #fff;
+  background: var(--danger);
+  box-shadow: 0 8px 18px rgba(215, 38, 61, 0.25);
+}
+
+.labelLoading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.spinner {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

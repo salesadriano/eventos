@@ -1,0 +1,41 @@
+.card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 1.25rem;
+  border: 1px solid transparent;
+}
+
+.default {
+  box-shadow: 0 16px 30px rgba(11, 18, 32, 0.08);
+}
+
+.outline {
+  border-color: var(--border);
+}
+
+.subtle {
+  background: rgba(15, 139, 216, 0.06);
+  border-color: rgba(15, 139, 216, 0.14);
+}
+
+.header {
+  margin-bottom: 0.75rem;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.title {
+  margin: 0.25rem 0 0;
+}
+
+.footer {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}

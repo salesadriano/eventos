@@ -257,11 +257,11 @@ Qualquer implementação que desviar da especificação visual do Design System 
 ### CA12 - Documentação
 
 - [x] Storybook (ou equivalente) configurado
-- [ ] Todos os componentes documentados com exemplos
-- [ ] Variações e estados demonstrados
-- [ ] Código de exemplo para cada componente
-- [ ] Diretrizes de uso claras
-- [ ] Tokens de design documentados
+- [x] Todos os componentes documentados com exemplos
+- [x] Variações e estados demonstrados
+- [x] Código de exemplo para cada componente
+- [x] Diretrizes de uso claras
+- [x] Tokens de design documentados
 
 ### CA13 - Testes
 
