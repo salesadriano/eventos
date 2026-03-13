@@ -55,3 +55,10 @@
 - Keep data access centralized through hooks/services (`src/presentation/hooks/useEventService.ts`, `src/application/services/EventService.ts`).
 - Prefer existing `apiClient` helpers over raw `fetch` calls in components.
 - Keep UI/auth state in context/hooks; components like `src/presentation/components/Login.tsx` remain presentation-focused.
+
+## Documentation glossary governance
+
+- Always run the `documentation-glossary-sync` skill when creating or modifying documentation artifacts.
+- Documentation artifacts include: Markdown (`.md`, `.markdown`), text (`.txt`), HTML (`.html`, `.htm`) and searchable PDF (`.pdf`).
+- The generated glossary output must be updated at `docs/GLOSSARIO_DOCUMENTACAO.md`.
+- For complex concepts, include trusted reference links in the glossary entries.
