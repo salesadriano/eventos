@@ -1,0 +1,22 @@
+.viewport {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: grid;
+  gap: 0.75rem;
+  width: min(92vw, 340px);
+}
+
+.toast {
+  box-shadow: 0 12px 24px rgba(11, 18, 32, 0.14);
+}
+
+@media (max-width: 768px) {
+  .viewport {
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    top: calc(0.75rem + env(safe-area-inset-top, 0));
+  }
+}

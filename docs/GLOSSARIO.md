@@ -11,6 +11,16 @@ Documento centralizado com todas as abreviações e siglas utilizadas no projeto
 | **QA** | Quality Assurance | Testes, validação e cobertura de testes                           | `QA-01 — Cobertura de testes` |
 | **P0** | Prioridade 0      | Crítica e bloqueante — deve ser implementada primeiro             | `FE-05 é P0 CRÍTICA`          |
 
+## Abreviações de Requisitos e Casos de Uso
+
+| Sigla  | Significado        | Contexto                                             | Exemplo                    |
+| ------ | ------------------ | ---------------------------------------------------- | -------------------------- |
+| **RN** | Regra de Negócio   | Regras de negócio dos casos de uso e funcionalidades | `RN-UC007-01`              |
+| **US** | User Story         | História de usuário associada a requisito funcional  | `US-007`                   |
+| **FA** | Fluxo Alternativo  | Caminho alternativo em caso de exceção/regra         | `FA1: inscrição duplicada` |
+| **CA** | Critério de Aceite | Critérios de validação e aceite de requisitos        | `CA-UC007-01`              |
+| **UX** | User Experience    | Experiência do usuário e validação de interface      | `Gate UX`                  |
+
 ## Abreviações Técnicas
 
 | Sigla     | Significado                       | Contexto                                        | Localização                                                |
@@ -18,10 +28,14 @@ Documento centralizado com todas as abreviações e siglas utilizadas no projeto
 | **DTO**   | Data Transfer Object              | Camada de apresentação e transferência de dados | `server/src/application/dtos/**`                           |
 | **JWT**   | JSON Web Token                    | Autenticação e autorização                      | `authMiddleware`, `tokenStorage`                           |
 | **OAuth** | Open Authorization                | Autenticação externa com provedores             | `UC-043`, `UC-044`                                         |
+| **OIDC**  | OpenID Connect                    | Camada de identidade sobre OAuth 2.0            | `UC-002`, `UC-017`, `UC-019`, `UC-044`                     |
+| **PKCE**  | Proof Key for Code Exchange       | Proteção de fluxo OAuth Authorization Code      | `UC-001`, `UC-019`, `UC-044`                               |
 | **SMTP**  | Simple Mail Transfer Protocol     | Serviço de email (opcional, configurável)       | `server/src/config/environment.ts`                         |
 | **CORS**  | Cross-Origin Resource Sharing     | Compartilhamento de recursos entre domínios     | _backend middleware_                                       |
 | **API**   | Application Programming Interface | Interface REST para comunicação                 | Base: `/api`                                               |
 | **REST**  | Representational State Transfer   | Padrão arquitetural de APIs                     | Todas as rotas em `server/src/presentation/http/routes/**` |
+| **URL**   | Uniform Resource Locator          | Endereço de recurso web                         | `UC-018`, `UC-034`                                         |
+| **ID**    | Identifier                        | Identificador único de regra/critério           | Tabelas `ID` dos UCs                                       |
 | **CRUD**  | Create, Read, Update, Delete      | Operações básicas de dados                      | `UC-004`, `UC-022`                                         |
 
 ## Abreviações de Persistência e Infraestrutura
@@ -30,13 +44,15 @@ Documento centralizado com todas as abreviações e siglas utilizadas no projeto
 | ---------- | --------------------- | ------------------------------------------------- | ------------------------------------------------------ |
 | **Sheets** | Google Sheets         | Persistência principal do projeto                 | `server/src/infrastructure/google/SheetInitializer.ts` |
 | **GCP**    | Google Cloud Platform | Plataforma de cloud (Google Sheets, autenticação) | `.env` (vars de ambiente)                              |
+| **AWS**    | Amazon Web Services   | Provedor cloud alternativo para repositório       | `UC-014`, `UC-039`                                     |
 
 ## Abreviações de Arquitetura
 
-| Sigla  | Significado          | Contexto                          | Localização                                        |
-| ------ | -------------------- | --------------------------------- | -------------------------------------------------- |
-| **DI** | Dependency Injection | Padrão de injeção de dependências | `server/src/container/index.ts` (`buildContainer`) |
-| **UC** | Use Case             | Casos de uso do sistema           | `docs/case/UC-*.md`                                |
+| Sigla   | Significado                  | Contexto                           | Localização                                        |
+| ------- | ---------------------------- | ---------------------------------- | -------------------------------------------------- |
+| **DI**  | Dependency Injection         | Padrão de injeção de dependências  | `server/src/container/index.ts` (`buildContainer`) |
+| **ADR** | Architecture Decision Record | Registro de decisões arquiteturais | `review/*.md`                                      |
+| **UC**  | Use Case                     | Casos de uso do sistema            | `docs/case/UC-*.md`                                |
 
 ## Abreviações de Padrões de Desenvolvimento
 

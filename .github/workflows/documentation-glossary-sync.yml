@@ -1,0 +1,57 @@
+name: Documentation Glossary Sync
+
+on:
+  pull_request:
+    paths:
+      - "docs/**"
+      - "issue/**"
+      - "review/**"
+      - "**/*.md"
+      - "**/*.markdown"
+      - "**/*.txt"
+      - "**/*.html"
+      - "**/*.htm"
+      - "**/*.pdf"
+  push:
+    branches:
+      - master
+      - main
+      - "feature/**"
+    paths:
+      - "docs/**"
+      - "issue/**"
+      - "review/**"
+      - "**/*.md"
+      - "**/*.markdown"
+      - "**/*.txt"
+      - "**/*.html"
+      - "**/*.htm"
+      - "**/*.pdf"
+
+jobs:
+  glossary-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate glossary
+        run: npm run glossary:sync
+
+      - name: Check for generated diff
+        run: |
+          if ! git diff --quiet -- docs/GLOSSARIO_DOCUMENTACAO.md; then
+            echo "Glossario documental desatualizado. Rode: npm run glossary:sync"
+            git --no-pager diff -- docs/GLOSSARIO_DOCUMENTACAO.md
+            exit 1
+          fi

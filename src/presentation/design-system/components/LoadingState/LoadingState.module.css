@@ -1,0 +1,76 @@
+.root {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.spinnerRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  border-radius: 999px;
+  border: 2px solid rgba(24, 119, 242, 0.22);
+  border-top-color: var(--brand-primary);
+  animation: spin 0.85s linear infinite;
+}
+
+.sm {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.md {
+  width: 1rem;
+  height: 1rem;
+}
+
+.lg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.skeleton {
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(11, 18, 32, 0.08),
+    rgba(11, 18, 32, 0.16),
+    rgba(11, 18, 32, 0.08)
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.line {
+  height: 0.9rem;
+}
+
+.block {
+  height: 6rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 180% 0;
+  }
+
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .skeleton {
+    animation: none;
+  }
+}
