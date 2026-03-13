@@ -220,15 +220,15 @@ Qualquer implementação que desviar da especificação visual do Design System 
 
 ### CA07 - Loading States
 
-- [ ] Skeleton screens implementados
-- [ ] Spinners/loaders com variações de tamanho
-- [ ] Estados de carregamento aplicáveis a componentes
+- [x] Skeleton screens implementados
+- [x] Spinners/loaders com variações de tamanho
+- [x] Estados de carregamento aplicáveis a componentes
 
 ### CA08 - Feedback Visual
 
-- [ ] Sistema de toasts/notificações implementado
-- [ ] Alerts com variações (info, success, warning, error)
-- [ ] Mensagens de feedback posicionadas consistentemente
+- [x] Sistema de toasts/notificações implementado
+- [x] Alerts com variações (info, success, warning, error)
+- [x] Mensagens de feedback posicionadas consistentemente
 
 ### CA09 - Layouts Base
 
@@ -265,16 +265,16 @@ Qualquer implementação que desviar da especificação visual do Design System 
 
 ### CA13 - Testes
 
-- [ ] Testes unitários para todos os componentes base (mínimo 80% de cobertura)
-- [ ] Testes de acessibilidade automatizados (jest-axe ou similar)
+- [x] Testes unitários para todos os componentes base (mínimo 80% de cobertura)
+- [x] Testes de acessibilidade automatizados (jest-axe ou similar)
 - [ ] Testes visuais de regressão (Chromatic ou similar - opcional)
 - [ ] Testes de responsividade em diferentes viewports
 
 ### CA14 - Gate UX Obrigatório
 
-- [ ] **Todas as implementações visuais foram revisadas e aprovadas pelo UX Expert**
-- [ ] Feedback do UX Expert documentado e integrado
-- [ ] Componentes seguem os princípios de design estabelecidos
+- [x] **Todas as implementações visuais foram revisadas e aprovadas pelo UX Expert**
+- [x] Feedback do UX Expert documentado e integrado
+- [x] Componentes seguem os princípios de design estabelecidos
 
 ### CA15 - Integração com Código Existente
 
